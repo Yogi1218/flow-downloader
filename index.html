@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Flow - Premium Media Downloader</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@450&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline": "#8c909f",
+                        "secondary-fixed": "#e5e2e1",
+                        "primary-container": "#528dff",
+                        "inverse-surface": "#e5e2e1",
+                        "secondary-fixed-dim": "#c9c6c5",
+                        "surface": "var(--surface-container)",
+                        "inverse-primary": "#0059c6",
+                        "surface-dim": "var(--bg-color)",
+                        "outline-variant": "#424753",
+                        "on-background": "var(--on-surface)",
+                        "surface-container-highest": "#353535",
+                        "on-tertiary-fixed-variant": "#454747",
+                        "on-surface": "var(--on-surface)",
+                        "tertiary-fixed": "#e2e2e2",
+                        "surface-container-low": "#1b1b1c",
+                        "surface-variant": "var(--surface-variant)",
+                        "primary": "var(--primary)",
+                        "surface-tint": "var(--primary)",
+                        "primary-fixed": "#d9e2ff",
+                        "tertiary-container": "#909191",
+                        "inverse-on-surface": "#303030",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "tertiary": "#c6c6c7",
+                        "surface-container-high": "#2a2a2a",
+                        "on-surface-variant": "var(--on-surface-variant)",
+                        "on-tertiary": "#2f3131",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-container": "#282a2a",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#0e0e0e",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "var(--primary)",
+                        "secondary-container": "#4a4949",
+                        "on-primary": "var(--on-primary)",
+                        "background": "var(--bg-color)",
+                        "on-error": "#690005",
+                        "on-secondary-container": "#bab8b7",
+                        "surface-container": "var(--surface-container)",
+                        "on-secondary-fixed-variant": "#474646",
+                        "on-secondary": "#313030",
+                        "on-primary-container": "#00275f",
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "secondary": "#c9c6c5",
+                        "surface-bright": "#393939",
+                        "on-primary-fixed": "#001a43",
+                        "on-primary-fixed-variant": "#004398",
+                        "tertiary-fixed-dim": "#c6c6c7"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "xl": "80px",
+                        "margin-main": "32px",
+                        "base": "8px",
+                        "md": "24px",
+                        "lg": "48px",
+                        "gutter-grid": "24px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "mono-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "mono-sm": ["12px", {"lineHeight": "16px", "fontWeight": "450"}]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        :root {
+            --bg-color: #f5f6fa;
+            --text-color: #1a1c1e;
+            --panel-bg: rgba(255, 255, 255, 0.7);
+            --panel-border: rgba(0, 0, 0, 0.05);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --on-surface: #1a1c1e;
+            --on-surface-variant: #565961;
+            --surface-container: #ffffff;
+            --surface-variant: #e8ebf0;
+            --primary: #0059c6;
+            --on-primary: #ffffff;
+        }
+        
+        html.dark {
+            --bg-color: #131313;
+            --text-color: #e5e2e1;
+            --panel-bg: rgba(19, 19, 19, 0.6);
+            --panel-border: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(32, 32, 32, 0.8);
+            --on-surface: #e5e2e1;
+            --on-surface-variant: #c2c6d6;
+            --surface-container: #202020;
+            --surface-variant: #353535;
+            --primary: #afc6ff;
+            --on-primary: #002d6c;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--panel-border);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+        html.dark .glass-card:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav-glow {
+            box-shadow: 10px 0 20px -10px rgba(175, 198, 255, 0.3);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(128, 128, 128, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(128, 128, 128, 0.3);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+
+    <!-- Toast Notifications Container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3"></div>
+
+    <!-- Floating Clipboard Link Pill -->
+    <div id="clipboardPill" class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-[80] glass-panel border border-primary/30 hover:border-primary/60 px-5 py-2.5 rounded-full shadow-2xl flex items-center gap-3 cursor-pointer transition-all hover:scale-105 active:scale-95">
+        <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+        </span>
+        <span class="text-xs font-semibold text-on-surface">Link detected in clipboard. Click to Analyze.</span>
+        <span class="material-symbols-outlined text-primary text-[18px]">bolt</span>
+    </div>
+
+    <!-- Debug Logs Terminal Modal -->
+    <div id="debugLogsModal" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+        <div class="glass-panel max-w-2xl w-full rounded-3xl border border-white/10 p-6 flex flex-col gap-4 max-h-[80vh] shadow-2xl">
+            <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-error flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">terminal</span>
+                    <span>Developer Debug Output</span>
+                </h4>
+                <button class="text-on-surface-variant/40 hover:text-on-surface" onclick="document.getElementById('debugLogsModal').classList.add('hidden')">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto bg-black/40 border border-white/5 p-4 rounded-xl font-mono-sm text-[11px] text-red-300/90 whitespace-pre-wrap select-all leading-normal max-h-96" id="debugLogsTerminal">
+                Traceback logs empty.
+            </div>
+            <div class="flex justify-end gap-3">
+                <button class="px-4 py-2 border border-white/10 hover:bg-white/5 text-on-surface-variant hover:text-on-surface rounded-xl text-xs font-bold transition-all" onclick="navigator.clipboard.writeText(document.getElementById('debugLogsTerminal').innerText); showToast('Copied', 'Debug output copied to clipboard', 'success')">Copy Logs</button>
+                <button class="bg-surface-variant/60 text-on-surface px-5 py-2 rounded-xl text-xs font-bold hover:bg-surface-variant transition-all" onclick="document.getElementById('debugLogsModal').classList.add('hidden')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-[260px] h-full fixed left-0 top-0 glass-panel flex flex-col py-margin-main border-r border-white/10 z-50 transition-all duration-300" id="sidebar">
+        <!-- Sidebar Brand with Water Logo -->
+        <div class="px-8 mb-8 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-primary to-primary/80 flex items-center justify-center shadow-lg shadow-primary/20 shrink-0">
+                    <span class="material-symbols-outlined text-[24px] text-on-primary font-semibold" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+                </div>
+                <div>
+                    <h1 class="font-headline-md text-headline-md font-bold text-on-surface">Flow</h1>
+                    <p class="text-[9px] text-primary font-bold tracking-widest uppercase mt-0.5">Premium Downloader</p>
+                </div>
+            </div>
+            <button class="lg:hidden text-on-surface-variant hover:text-on-surface" id="sidebarCloseToggle">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <nav class="flex-1 space-y-1 px-4">
+            <!-- Home -->
+            <button onclick="navigateTo('home')" id="nav-home" class="nav-link w-full flex items-center px-4 py-3 rounded-xl text-primary font-bold active-nav-glow bg-primary/5 transition-all group">
+                <span class="material-symbols-outlined mr-4" style="font-variation-settings: 'FILL' 1;">home</span>
+                <span class="font-body-md text-body-md">Home</span>
+            </button>
+            <!-- Downloads -->
+            <button onclick="navigateTo('downloads')" id="nav-downloads" class="nav-link w-full flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all group">
+                <span class="material-symbols-outlined mr-4">download</span>
+                <span class="font-body-md text-body-md">Downloads</span>
+                <span id="activeDownloadsBadge" class="hidden ml-auto bg-primary text-on-primary-container text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
+            </button>
+            <!-- History -->
+            <button onclick="navigateTo('history')" id="nav-history" class="nav-link w-full flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all group">
+                <span class="material-symbols-outlined mr-4">history</span>
+                <span class="font-body-md text-body-md">History</span>
+            </button>
+            <!-- Settings -->
+            <button onclick="navigateTo('settings')" id="nav-settings" class="nav-link w-full flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all group">
+                <span class="material-symbols-outlined mr-4">settings</span>
+                <span class="font-body-md text-body-md">Settings</span>
+            </button>
+        </nav>
+        
+        <!-- Storage panel component -->
+        <div class="px-6 mt-auto pt-8 border-t border-white/5 space-y-4">
+            <div class="glass-card p-4 rounded-2xl">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="material-symbols-outlined text-primary text-[20px]">cloud_done</span>
+                    <span class="font-label-caps text-on-surface">Storage Status</span>
+                </div>
+                <div class="w-full h-1.5 bg-white/10 rounded-full mb-2 overflow-hidden">
+                    <div class="bg-primary h-full w-[35%] rounded-full shadow-[0_0_8px_rgba(175,198,255,0.5)]"></div>
+                </div>
+                <div class="flex justify-between items-center text-[10px] text-on-surface-variant">
+                    <span>Local Server</span>
+                    <span class="font-medium text-primary">Connected</span>
+                </div>
+            </div>
+            <button id="themeToggle" class="w-full flex items-center justify-between p-3 rounded-xl bg-surface-variant/20 hover:bg-surface-variant/40 border border-white/5 transition-all text-on-surface-variant hover:text-on-surface">
+                <span class="flex items-center"><span id="themeIcon" class="material-symbols-outlined mr-3">dark_mode</span>Mode Toggle</span>
+                <span class="text-[10px] uppercase font-bold tracking-wider opacity-60">Dark</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="ml-[260px] flex-1 min-h-screen relative transition-all duration-300" id="mainContent">
+        <!-- Header -->
+        <header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 glass-panel border-b border-white/10 flex items-center justify-between px-margin-main z-40 transition-all duration-300" id="topHeader">
+            <div class="flex items-center gap-4">
+                <button class="lg:hidden p-2 text-on-surface-variant hover:text-on-surface" id="sidebarOpenToggle">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <h3 class="text-sm font-bold tracking-tight text-on-surface hidden md:block">FLOW PROTOCOL</h3>
+            </div>
+            <div class="flex items-center gap-6">
+                <button onclick="pasteUrl()" class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-full font-bold transition-all hover:brightness-110 active:scale-95 text-xs">
+                    <span class="material-symbols-outlined text-[16px]">content_paste</span>
+                    <span>Paste Clipboard</span>
+                </button>
+
+            </div>
+        </header>
+
+        <!-- Dynamic Main Views -->
+        <div class="pt-24 pb-margin-main px-margin-main max-w-6xl mx-auto space-y-lg">
+
+            <!-- PAGE: HOME -->
+            <div id="page-home" class="page-view space-y-lg">
+                <!-- Hero section -->
+                <div class="relative overflow-hidden pt-12 pb-8 flex flex-col items-center text-center">
+                    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/10 blur-[100px] rounded-full pointer-events-none"></div>
+                    <div class="relative z-10 max-w-3xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                        <h2 class="font-display-lg text-display-lg text-on-surface mb-6 tracking-tight">
+                            Download Media <span class="text-primary">Beautifully</span>
+                        </h2>
+                        <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 px-12 leading-relaxed">
+                            Paste any YouTube video/playlist, Instagram reel, or X (Twitter) post link to download media instantly in premium quality.
+                        </p>
+                        
+                        <!-- Main Link Input Control -->
+                        <div class="glass-panel p-2 rounded-2xl shadow-2xl flex items-center gap-2 w-full max-w-2xl mx-auto border-white/10 focus-within:ring-2 focus-within:ring-primary/40 transition-all">
+                            <div class="flex-1 px-4 flex items-center gap-3">
+                                <span class="material-symbols-outlined text-on-surface-variant">link</span>
+                                <input id="ytUrlInput" class="w-full bg-transparent border-none text-on-surface focus:ring-0 placeholder:text-on-surface-variant/40 font-body-lg text-base outline-none border-0" placeholder="Paste YouTube, Instagram, or X post link here..." type="text"/>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="clearUrl()" class="px-4 py-2 hover:bg-surface-variant/40 rounded-xl text-on-surface-variant font-medium transition-colors text-sm">Clear</button>
+                                <button onclick="analyzeUrl()" class="bg-primary text-on-primary-container font-bold px-8 py-3 rounded-xl flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20">
+                                    Analyze
+                                    <span class="material-symbols-outlined text-[20px]">bolt</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 flex justify-center gap-6 text-on-surface-variant/60 font-label-caps text-[10px]">
+                            <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">high_quality</span> YOUTUBE, INSTAGRAM & X</div>
+                            <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">speed</span> SPEED ACCELERATION</div>
+                            <div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">verified</span> CLEAN PIPELINE</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis State: Loading View -->
+                <div id="home-loading-view" class="hidden glass-panel p-12 rounded-[32px] flex flex-col items-center justify-center space-y-6">
+                    <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    <div class="text-center">
+                        <h4 class="font-headline-sm text-on-surface">Extracting Media Content</h4>
+                        <p class="text-xs text-on-surface-variant/60 mt-1">Connecting to host, parsing streams and tags...</p>
+                    </div>
+                </div>
+
+                <!-- Analysis State: Video Analysis Card View -->
+                <div id="home-analysis-view" class="hidden space-y-6">
+                    <!-- Heading -->
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-headline-md text-on-surface">Media Analysis Complete</h4>
+                        <button onclick="backToHomeDefault()" class="flex items-center gap-2 text-primary font-bold text-sm hover:underline">
+                            <span class="material-symbols-outlined text-sm">arrow_back</span> Back to search
+                        </button>
+                    </div>
+
+                    <!-- Details Card -->
+                    <div class="glass-panel p-8 rounded-[32px] flex flex-col md:flex-row gap-8 relative overflow-hidden">
+                        <div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/15 blur-[80px] rounded-full pointer-events-none"></div>
+                        
+                        <!-- Left: Thumbnail -->
+                        <div class="relative w-full md:w-80 aspect-video rounded-2xl overflow-hidden shrink-0 shadow-2xl border border-white/5">
+                            <img id="videoThumbnail" class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?auto=format&fit=crop&q=80&w=640&h=360" alt="Thumbnail"/>
+                            <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[10px] font-bold text-white uppercase tracking-wider" id="videoDurationBadge">--</div>
+                        </div>
+
+                        <!-- Right: Info Details & Download Setup Form -->
+                        <div class="flex-1 space-y-6">
+                            <div>
+                                <span class="text-primary font-bold tracking-widest text-[11px] uppercase">Stream Resolved</span>
+                                <h3 id="videoTitle" class="font-headline-md text-headline-md text-on-surface line-clamp-2 leading-snug mt-1 font-semibold">Title</h3>
+                                <div class="flex items-center gap-4 mt-2 text-xs text-on-surface-variant/80">
+                                    <span id="videoChannel" class="flex items-center gap-1">Channel</span>
+                                    <span>•</span>
+                                    <span id="videoViews">views</span>
+                                    <span>•</span>
+                                    <span>Est. Size: <strong id="videoEstSize" class="text-on-surface font-semibold">N/A</strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Playlist Container Entries -->
+                            <div id="playlistContainer" class="hidden space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
+                                <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-primary" id="playlistTitle">Playlist Tracks</h4>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-[10px] text-on-surface-variant" id="playlistEstSize">0 items</span>
+                                        <label class="flex items-center gap-1.5 text-xs text-on-surface cursor-pointer select-none">
+                                            <input type="checkbox" checked onchange="toggleSelectAllPlaylist(this)" class="w-3.5 h-3.5 rounded border-white/10 text-primary bg-transparent focus:ring-primary"/>
+                                            <span>All</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="max-h-48 overflow-y-auto space-y-2 pr-2" id="playlistItemsList">
+                                    <!-- Dynamic elements go here -->
+                                </div>
+                            </div>
+
+                            <!-- Form settings cards -->
+                            <div id="optionsCardFrame" class="space-y-4">
+                                <!-- Mode Toggles (Video, Audio, Thumbnail) -->
+                                <div>
+                                    <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider mb-2">Extraction Category</p>
+                                    <div class="flex gap-2">
+                                        <button onclick="setDownloadMode('video')" id="mode-video" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all bg-primary text-on-primary shadow-lg shadow-primary/10">Video Stream</button>
+                                        <button onclick="setDownloadMode('audio')" id="mode-audio" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all border border-white/10 text-on-surface-variant hover:text-on-surface">Audio Extract</button>
+                                        <button onclick="setDownloadMode('thumb')" id="mode-thumb" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all border border-white/10 text-on-surface-variant hover:text-on-surface">Thumbnail Image</button>
+                                    </div>
+                                </div>
+
+                                <!-- Video specific details quality cards -->
+                                <div id="videoQualitySection" class="space-y-2">
+                                    <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">Select Stream Quality Target</p>
+                                    <div class="grid grid-cols-4 gap-2">
+                                        <div onclick="selectQuality('4k')" id="qual-4k" class="border border-white/10 bg-white/5 p-2 rounded-xl cursor-pointer flex flex-col items-center justify-center hover:bg-white/10 transition-all">
+                                            <span class="text-xs font-bold">2160p</span>
+                                            <span class="text-[9px] text-on-surface-variant mt-0.5">Ultra HD</span>
+                                        </div>
+                                        <div onclick="selectQuality('1080p')" id="qual-1080p" class="border border-white/10 bg-white/5 p-2 rounded-xl cursor-pointer flex flex-col items-center justify-center hover:bg-white/10 transition-all">
+                                            <span class="text-xs font-bold">1080p</span>
+                                            <span class="text-[9px] text-on-surface-variant mt-0.5">Full HD</span>
+                                        </div>
+                                        <div onclick="selectQuality('720p')" id="qual-720p" class="border-2 border-primary bg-primary/10 p-2 rounded-xl cursor-pointer flex flex-col items-center justify-center transition-all">
+                                            <span class="text-xs font-bold">720p</span>
+                                            <span class="text-[9px] text-on-surface-variant mt-0.5">HD standard</span>
+                                        </div>
+                                        <div onclick="selectQuality('360p')" id="qual-360p" class="border border-white/10 bg-white/5 p-2 rounded-xl cursor-pointer flex flex-col items-center justify-center hover:bg-white/10 transition-all">
+                                            <span class="text-xs font-bold">360p</span>
+                                            <span class="text-[9px] text-on-surface-variant mt-0.5">Mobile Lofi</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Audio specific details select configs -->
+                                <div id="audioFormatOptions" class="hidden grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider block mb-1">Audio Format</label>
+                                        <select id="audioFormatSelect" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs focus:ring-primary focus:border-primary text-on-surface outline-none">
+                                            <option class="bg-surface text-on-surface" value="mp3">MP3</option>
+                                            <option class="bg-surface text-on-surface" value="m4a" selected>M4A</option>
+                                            <option class="bg-surface text-on-surface" value="wav">WAV</option>
+                                            <option class="bg-surface text-on-surface" value="flac">FLAC</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider block mb-1">Compression Bitrate</label>
+                                        <select id="audioBitrateSelect" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs focus:ring-primary focus:border-primary text-on-surface outline-none">
+                                            <option class="bg-surface text-on-surface" value="320">320 Kbps (Highest)</option>
+                                            <option class="bg-surface text-on-surface" value="256">256 Kbps</option>
+                                            <option class="bg-surface text-on-surface" value="192" selected>192 Kbps (Optimal)</option>
+                                            <option class="bg-surface text-on-surface" value="128">128 Kbps (Light)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Config inputs: save path, filename, speed bounds -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider block mb-1">Save Filename</label>
+                                        <div class="flex items-center bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary">
+                                            <input id="analysisFilenameInput" type="text" class="bg-transparent border-0 outline-none flex-1 p-0 focus:ring-0 select-all" placeholder="Enter target name"/>
+                                            <span class="text-on-surface-variant" id="filenameExtensionLabel">.mp4</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider block mb-1">Target Directory</label>
+                                        <div class="flex items-center gap-2">
+                                            <input id="saveDirInput" type="text" class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs focus:ring-primary focus:border-primary outline-none" value="/Users/yogipatel/Downloads"/>
+                                            <button onclick="triggerBrowseDirectory()" class="p-2 border border-white/10 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
+                                                <span class="material-symbols-outlined text-[16px] block">folder_open</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Extra tweaks: download limiter -->
+                                <div>
+                                    <label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider block mb-1">Throttling Speed Limiter (Optional)</label>
+                                    <select id="downloadSpeedLimit" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs focus:ring-primary focus:border-primary text-on-surface outline-none">
+                                        <option class="bg-surface text-on-surface" value="">No Limit (Full Speed)</option>
+                                        <option class="bg-surface text-on-surface" value="50000">50 MB/s Limit</option>
+                                        <option class="bg-surface text-on-surface" value="10000">10 MB/s Limit</option>
+                                        <option class="bg-surface text-on-surface" value="5000">5 MB/s Limit</option>
+                                        <option class="bg-surface text-on-surface" value="2000">2 MB/s Limit</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Start Download button -->
+                            <div class="pt-4 border-t border-white/5">
+                                <button onclick="startLiveDownloadSim()" class="w-full bg-primary text-on-primary-container font-extrabold py-4 rounded-2xl flex items-center justify-center gap-3 hover:brightness-110 active:scale-[0.98] transition-all shadow-xl shadow-primary/20">
+                                    <span class="material-symbols-outlined">download</span>
+                                    <span>Download Stream</span>
+                                    <span class="bg-on-primary-container/10 px-2 py-0.5 rounded text-[10px]" id="downloadBtnSizeBadge">N/A</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recently Saved List Grid on Home -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Recently Completed Downloads</h4>
+                        <button onclick="navigateTo('history')" class="text-xs text-primary font-bold hover:underline">View full library →</button>
+                    </div>
+                    <div id="homeRecentGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Dynamic items render here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE: DOWNLOADS / ACTIVE QUEUE -->
+            <div id="page-downloads" class="page-view hidden space-y-lg">
+                <div class="flex items-end justify-between">
+                    <div>
+                        <h2 class="font-display-lg text-display-lg tracking-tight text-on-surface">Download Queue</h2>
+                        <p id="activeDownloadsSummary" class="text-on-surface-variant mt-2 font-body-md">No jobs actively downloading</p>
+                    </div>
+                    <button onclick="cancelAllActiveDownloads()" class="flex items-center gap-2 px-6 py-3 glass-panel rounded-xl text-on-surface hover:bg-surface-variant/40 transition-all active:scale-[0.98]">
+                        <span class="material-symbols-outlined">pause_circle</span>
+                        <span class="font-headline-sm text-headline-sm">Cancel All Active</span>
+                    </button>
+                </div>
+
+                <!-- Main dynamic threads box -->
+                <div id="downloadsQueueGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Dynamic rendering of downloading files -->
+                </div>
+            </div>
+
+            <!-- PAGE: HISTORY / COMPLETED FILES -->
+            <div id="page-history" class="page-view hidden space-y-lg">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                        <h2 class="font-display-lg text-display-lg tracking-tight text-on-surface">Downloaded Library</h2>
+                        <p class="text-on-surface-variant mt-2 font-body-md">Your catalog of files processed successfully</p>
+                    </div>
+                    
+                    <!-- Search & filter controls -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="relative bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs focus-within:ring-2 focus-within:ring-primary/40 focus-within:border-primary">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
+                            <input id="historySearch" oninput="renderHistory()" type="text" class="w-48 bg-transparent border-0 outline-none pl-6 pr-1 focus:ring-0 p-0" placeholder="Filter library files..."/>
+                        </div>
+                        <select id="historySort" onchange="renderHistory()" class="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-on-surface focus:ring-primary focus:border-primary outline-none">
+                            <option class="bg-surface text-on-surface" value="date">Sort: Date Added</option>
+                            <option class="bg-surface text-on-surface" value="size">Sort: File Size</option>
+                        </select>
+                        <div class="flex bg-white/5 p-1 rounded-xl border border-white/5">
+                            <button id="hist-filter-all" onclick="filterHistory('all')" class="px-3 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-brand-darkBg text-primary shadow-sm transition-all">All</button>
+                            <button id="hist-filter-video" onclick="filterHistory('video')" class="px-3 py-1 text-xs font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all">Videos</button>
+                            <button id="hist-filter-audio" onclick="filterHistory('audio')" class="px-3 py-1 text-xs font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all">Audio</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History files list grid -->
+                <div id="historyGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards layout generated dynamically by renderHistory() -->
+                </div>
+            </div>
+
+            <!-- PAGE: SETTINGS -->
+            <div id="page-settings" class="page-view hidden space-y-lg">
+                <div>
+                    <h2 class="font-display-lg text-display-lg tracking-tight text-on-surface">System Options</h2>
+                    <p class="text-on-surface-variant mt-2 font-body-md">Configure downloading limits, cookie overrides, and theme configurations</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    <!-- Left: Subtabs -->
+                    <div class="lg:col-span-1 space-y-1">
+                        <button id="settings-tab-general" onclick="switchSettingsTab('general')" class="w-full text-left px-4 py-3 text-xs font-bold rounded-xl bg-white/5 text-primary border border-white/5">General & Saving</button>
+                        <button id="settings-tab-cookies" onclick="switchSettingsTab('cookies')" class="w-full text-left px-4 py-3 text-xs font-bold rounded-xl text-on-surface-variant hover:bg-white/5 transition-all">Cookies & Authentication</button>
+                        <button id="settings-tab-styling" onclick="switchSettingsTab('styling')" class="w-full text-left px-4 py-3 text-xs font-bold rounded-xl text-on-surface-variant hover:bg-white/5 transition-all">UI Style Customizer</button>
+                    </div>
+
+                    <!-- Right: Config Panel Content -->
+                    <div class="lg:col-span-3 glass-panel p-8 rounded-3xl space-y-6">
+                        <!-- TAB: General -->
+                        <div id="settings-view-general" class="settings-panel space-y-6">
+                            <div>
+                                <h3 class="text-sm font-bold text-on-surface mb-2">Saving Target Location</h3>
+                                <p class="text-xs text-on-surface-variant mb-4">Set the absolute path where media downloads are exported on the filesystem.</p>
+                                <div class="flex items-center gap-2">
+                                    <input id="settingsSaveDirInput" type="text" class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs focus:ring-primary focus:border-primary text-on-surface outline-none" value="/Users/yogipatel/Downloads"/>
+                                    <button onclick="triggerBrowseDirectoryGeneral()" class="p-3 border border-white/10 bg-white/5 hover:bg-white/10 rounded-xl transition-all">
+                                        <span class="material-symbols-outlined text-[18px] block">folder_open</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-white/5 flex justify-end">
+                                <button onclick="saveGeneralConfig()" class="bg-primary text-on-primary-container px-6 py-2.5 rounded-xl text-xs font-bold hover:brightness-110 transition-all">Save Changes</button>
+                            </div>
+                        </div>
+
+                        <!-- TAB: Cookies -->
+                        <div id="settings-view-cookies" class="settings-panel hidden space-y-6">
+                            <div>
+                                <h3 class="text-sm font-bold text-on-surface mb-1">Cookies & Browser Authentication</h3>
+                                <p class="text-xs text-on-surface-variant mb-4">Select browser cookies or paste raw headers to bypass Instagram and X validation blocks.</p>
+                                
+                                <div class="bg-primary/5 rounded-xl border border-primary/10 p-3 mb-4 space-y-2 text-left">
+                                    <div class="flex items-center gap-2 text-primary">
+                                        <span class="material-symbols-outlined text-sm font-semibold" style="font-variation-settings: 'FILL' 1;">info</span>
+                                        <span class="text-xs font-bold">How to bypass Instagram / X blocks:</span>
+                                    </div>
+                                    <ol class="text-[11px] text-on-surface-variant list-decimal list-inside space-y-1 pl-1">
+                                        <li>Install a free extension like <strong>"Get cookies.txt LOCALLY"</strong> (Chrome/Edge/Brave) or <strong>"cookies.txt"</strong> (Firefox).</li>
+                                        <li>Open Instagram or X (Twitter) in your web browser and ensure you are logged in.</li>
+                                        <li>Click the extension icon and select <strong>"Copy to Clipboard"</strong> (Netscape format).</li>
+                                        <li>Paste the copied text into the <strong>Manual cookies.txt content</strong> box below and click <strong>Save Authentication</strong>.</li>
+                                    </ol>
+                                </div>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider block mb-1">Import Cookies from Local Browser</label>
+                                        <select id="browserCookiesSelect" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs focus:ring-primary focus:border-primary text-on-surface outline-none">
+                                            <option value="" class="bg-surface text-on-surface">Disabled (No Browser Cookies)</option>
+                                            <option value="chrome" class="bg-surface text-on-surface">Google Chrome</option>
+                                            <option value="safari" class="bg-surface text-on-surface">Safari</option>
+                                            <option value="firefox" class="bg-surface text-on-surface">Mozilla Firefox</option>
+                                            <option value="edge" class="bg-surface text-on-surface">Microsoft Edge</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider block mb-1">Manual cookies.txt content</label>
+                                        <textarea id="manualCookiesTextarea" class="w-full h-32 bg-white/5 border border-white/10 rounded-xl p-3 text-xs font-mono-sm text-on-surface focus:ring-primary focus:border-primary outline-none" placeholder="# Netscape HTTP Cookie File&#10;# Paste Netscape cookies format here..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-white/5 flex justify-end">
+                                <button onclick="saveCookiesConfigDirect()" class="bg-primary text-on-primary-container px-6 py-2.5 rounded-xl text-xs font-bold hover:brightness-110 transition-all">Save Authentication</button>
+                            </div>
+                        </div>
+
+                        <!-- TAB: Styling -->
+                        <div id="settings-view-styling" class="settings-panel hidden space-y-6">
+                            <div>
+                                <h3 class="text-sm font-bold text-on-surface mb-2">Accent UI Highlights</h3>
+                                <p class="text-xs text-on-surface-variant mb-4">Customize the primary branding color across dashboard indicators.</p>
+                                <div class="flex items-center gap-3">
+                                    <button onclick="setAccentColor('#afc6ff')" class="w-8 h-8 rounded-full bg-[#afc6ff] border border-white/10 flex items-center justify-center text-[#002d6c] font-bold text-xs">✓</button>
+                                    <button onclick="setAccentColor('#007AFF')" class="w-8 h-8 rounded-full bg-[#007AFF] border border-white/10"></button>
+                                    <button onclick="setAccentColor('#34C759')" class="w-8 h-8 rounded-full bg-[#34C759] border border-white/10"></button>
+                                    <button onclick="setAccentColor('#FF9500')" class="w-8 h-8 rounded-full bg-[#FF9500] border border-white/10"></button>
+                                    <button onclick="setAccentColor('#FF2D55')" class="w-8 h-8 rounded-full bg-[#FF2D55] border border-white/10"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JavaScript integration backend handlers -->
+    <script>
+        const appState = {
+            currentNavPage: "home",
+            downloadMode: "video",
+            qualitySelected: "720p",
+            isThemeDark: true,
+            accentColor: "#afc6ff",
+            analyzedVideo: {},
+            downloads: [],
+            previousDownloads: [],
+            history: []
+        };
+
+        const speedHistory = {}; // Key: download_id, Value: Array of speed floats
+        let activePollInterval = null;
+
+        // Interactive Toast Notifications
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            toast.className = "flex items-start gap-3 p-4 rounded-2xl glass-panel border border-white/10 shadow-2xl animate-in slide-in-from-right-8 duration-300 min-w-[280px] max-w-sm";
+            
+            let icon = "info";
+            let iconColor = "text-primary";
+            if (type === 'success') {
+                icon = "check_circle";
+                iconColor = "text-emerald-400";
+            } else if (type === 'error') {
+                icon = "error";
+                iconColor = "text-error";
+            }
+            
+            toast.innerHTML = `
+                <span class="material-symbols-outlined ${iconColor} shrink-0">${icon}</span>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold text-on-surface">${title}</p>
+                    <p class="text-[11px] text-on-surface-variant/80 mt-0.5 leading-snug">${message}</p>
+                </div>
+                <button class="text-on-surface-variant/40 hover:text-on-surface shrink-0" onclick="this.parentElement.remove()">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+            `;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('slide-in-from-right-8');
+                toast.classList.add('animate-out', 'fade-out', 'duration-300');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Clipboard Auto-Detect
+        let lastDetectedUrl = "";
+        function checkClipboard() {
+            if (!navigator.clipboard || !navigator.clipboard.readText) return;
+            navigator.clipboard.readText().then(text => {
+                text = text.trim();
+                if (text === lastDetectedUrl) return;
+                if (text.includes("instagram.com/") || text.includes("x.com/") || text.includes("twitter.com/")) {
+                    lastDetectedUrl = text;
+                    const pill = document.getElementById('clipboardPill');
+                    if (pill) {
+                        pill.onclick = () => {
+                            document.getElementById('ytUrlInput').value = text;
+                            analyzeUrl();
+                            pill.classList.add('hidden');
+                        };
+                        pill.classList.remove('hidden');
+                        setTimeout(() => pill.classList.add('hidden'), 8000);
+                    }
+                }
+            }).catch(() => {});
+        }
+        window.addEventListener('focus', checkClipboard);
+
+        // Speed Chart line drawing
+        function updateSpeedChart(canvasId, speedVal, downloadId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            if (!speedHistory[downloadId]) {
+                speedHistory[downloadId] = [];
+            }
+            
+            let val = 0;
+            if (speedVal && speedVal !== 'N/A') {
+                const m = speedVal.match(/([0-9.]+)\s*MB\/s/);
+                if (m) val = parseFloat(m[1]);
+            }
+            
+            speedHistory[downloadId].push(val);
+            if (speedHistory[downloadId].length > 25) {
+                speedHistory[downloadId].shift();
+            }
+            
+            const data = speedHistory[downloadId];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (data.length < 2) return;
+            
+            const max = Math.max(...data, 10);
+            
+            ctx.beginPath();
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#afc6ff';
+            ctx.lineWidth = 2;
+            
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, 'rgba(175, 198, 255, 0.25)');
+            gradient.addColorStop(1, 'rgba(175, 198, 255, 0)');
+            
+            const step = canvas.width / (data.length - 1);
+            ctx.moveTo(0, canvas.height - (data[0] / max) * canvas.height);
+            
+            for (let i = 1; i < data.length; i++) {
+                ctx.lineTo(i * step, canvas.height - (data[i] / max) * canvas.height);
+            }
+            ctx.stroke();
+            
+            ctx.lineTo((data.length - 1) * step, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.fillStyle = gradient;
+            ctx.fill();
+        }
+
+        // Open detailed logs modal
+        function openDebugLogs(downloadId) {
+            fetch(`/api/progress/${downloadId}`)
+            .then(res => res.json())
+            .then(state => {
+                const logs = state.error_log || "No traceback logs recorded for this download.";
+                document.getElementById('debugLogsTerminal').innerText = logs;
+                document.getElementById('debugLogsModal').classList.remove('hidden');
+            })
+            .catch(() => {
+                showToast("Error", "Could not fetch debug logs from server.", "error");
+            });
+        }
+
+        // Navigation Controller
+        function navigateTo(pageId) {
+            appState.currentNavPage = pageId;
+            
+            document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+            const activePage = document.getElementById(`page-${pageId}`);
+            if (activePage) {
+                activePage.classList.remove('hidden');
+            }
+            
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                const btnId = btn.getAttribute('id');
+                if (btnId === `nav-${pageId}`) {
+                    btn.className = "nav-link w-full flex items-center px-4 py-3 rounded-xl text-primary font-bold active-nav-glow bg-primary/5 transition-all group";
+                    const span = btn.querySelector('span');
+                    if (span) span.style.fontVariationSettings = "'FILL' 1";
+                } else {
+                    btn.className = "nav-link w-full flex items-center px-4 py-3 rounded-xl text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/20 transition-all group";
+                    const span = btn.querySelector('span');
+                    if (span) span.style.fontVariationSettings = "'FILL' 0";
+                }
+            });
+            
+            if (pageId === 'home') {
+                fetchHistory();
+            } else if (pageId === 'downloads') {
+                fetchActiveDownloads();
+            } else if (pageId === 'history') {
+                fetchHistory();
+            }
+        }
+
+        // Toggle Sidebar on mobile
+        document.getElementById('sidebarOpenToggle').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+        });
+        document.getElementById('sidebarCloseToggle').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.add('-translate-x-full');
+            sidebar.classList.remove('translate-x-0');
+        });
+
+        // Theme Toggle Handler
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const toggleText = themeToggle.querySelector('span.text-\\[10px\\]');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeIcon.innerText = "light_mode";
+                if (toggleText) toggleText.innerText = "Light";
+                appState.isThemeDark = false;
+                localStorage.setItem('flow-theme', 'light');
+            } else {
+                html.classList.add('dark');
+                themeIcon.innerText = "dark_mode";
+                if (toggleText) toggleText.innerText = "Dark";
+                appState.isThemeDark = true;
+                localStorage.setItem('flow-theme', 'dark');
+            }
+            // Update canvas stroke colors
+            appState.downloads.forEach(dl => {
+                if (dl.status !== 'Completed' && !dl.status.startsWith('Error') && dl.status !== 'Cancelled') {
+                    updateSpeedChart(`chart-${dl.id}`, dl.speed, dl.id);
+                }
+            });
+        });
+
+
+
+        function clearUrl() {
+            document.getElementById('ytUrlInput').value = '';
+        }
+
+        function pasteUrl() {
+            navigator.clipboard.readText().then(text => {
+                document.getElementById('ytUrlInput').value = text;
+                showToast("Link Pasted", "Pasted URL successfully from clipboard.", "success");
+                analyzeUrl(); // Auto-analyze immediately!
+            }).catch(() => {
+                showToast("Paste Blocked", "Clipboard access denied. Paste manually.", "error");
+            });
+        }
+
+        // Trigger video stream analysis through python backend
+        function analyzeUrl() {
+            const url = document.getElementById('ytUrlInput').value.trim();
+            if (!url) {
+                showToast("Validation Error", "Please paste a link first!", "error");
+                return;
+            }
+
+            document.getElementById('home-analysis-view').classList.add('hidden');
+            document.getElementById('home-loading-view').classList.remove('hidden');
+            
+            setTimeout(() => {
+                const loadingView = document.getElementById('home-loading-view');
+                if (loadingView) loadingView.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+
+            const cookiesBrowser = localStorage.getItem('flow-cookies-browser') || '';
+            const cookiesText = localStorage.getItem('flow-manual-cookies') || '';
+            
+            fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: url, cookies_browser: cookiesBrowser, cookies_text: cookiesText, user_agent: navigator.userAgent })
+            })
+            .then(async res => {
+                const isJson = res.headers.get('content-type')?.includes('application/json');
+                const data = isJson ? await res.json() : null;
+                if (!res.ok) {
+                    const error = (data && data.error) || 'Media analysis failed. Check cookies/connection.';
+                    throw new Error(error);
+                }
+                return data;
+            })
+            .then(video => {
+                document.getElementById('home-loading-view').classList.add('hidden');
+                document.getElementById('home-analysis-view').classList.remove('hidden');
+                
+                setTimeout(() => {
+                    const analysisView = document.getElementById('home-analysis-view');
+                    if (analysisView) analysisView.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+                
+                appState.analyzedVideo = video;
+                showToast("Analysis Complete", `Resolved title: ${video.title.substring(0, 25)}...`, "success");
+                
+                if (video.isPlaylist) {
+                    document.getElementById('playlistContainer').classList.remove('hidden');
+                    document.getElementById('optionsCardFrame').classList.add('hidden');
+                    document.getElementById('videoThumbnail').src = video.thumbnail || 'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?auto=format&fit=crop&q=80&w=640&h=360';
+                    document.getElementById('videoTitle').innerText = video.title;
+                    document.getElementById('videoChannel').innerText = "Dynamic Playlist Collection";
+                    document.getElementById('videoViews').innerText = "Multiple Tracks";
+                    document.getElementById('videoDurationBadge').innerText = "BATCH";
+                    document.getElementById('videoEstSize').innerText = video.estSize || "N/A";
+                    document.getElementById('downloadBtnSizeBadge').innerText = "Batch Download";
+                    
+                    renderPlaylistItems(video.entries);
+                } else {
+                    document.getElementById('playlistContainer').classList.add('hidden');
+                    document.getElementById('optionsCardFrame').classList.remove('hidden');
+                    document.getElementById('videoThumbnail').src = video.thumbnail || 'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?auto=format&fit=crop&q=80&w=640&h=360';
+                    document.getElementById('videoTitle').innerText = video.title;
+                    document.getElementById('videoChannel').innerHTML = `${video.channel || 'User Feed'} <span class="material-symbols-outlined text-primary text-xs" style="font-variation-settings: 'FILL' 1;">verified</span>`;
+                    document.getElementById('videoViews').innerText = video.views ? `${video.views} views` : 'Verified Post';
+                    document.getElementById('downloadBtnSizeBadge').innerText = video.estSize || "N/A";
+                    
+                    const duration = video.duration;
+                    let durStr = "HD";
+                    if (duration) {
+                        const mins = Math.floor(duration / 60);
+                        const secs = duration % 60;
+                        durStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+                    }
+                    document.getElementById('videoDurationBadge').innerText = durStr;
+                    document.getElementById('videoEstSize').innerText = video.estSize || "N/A";
+                    
+                    const cleanName = video.title.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 32);
+                    document.getElementById('analysisFilenameInput').value = cleanName;
+                }
+            })
+            .catch(err => {
+                document.getElementById('home-loading-view').classList.add('hidden');
+                
+                let userFriendlyMsg = err.message;
+                if (err.message.includes("empty media response") || err.message.includes("cookies") || err.message.includes("logged-in")) {
+                    userFriendlyMsg = "Instagram blocked the request. Please go to Settings > Cookies, select your web browser (Chrome/Safari) to share authentication session, click Save, and retry.";
+                }
+                
+                showToast("Analysis Failed", userFriendlyMsg, "error");
+            });
+        }
+
+        function renderPlaylistItems(entries) {
+            const list = document.getElementById('playlistItemsList');
+            list.innerHTML = '';
+            
+            document.getElementById('playlistTitle').innerText = appState.analyzedVideo.title;
+            document.getElementById('playlistEstSize').innerText = `${entries.length} items found`;
+            
+            entries.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/5";
+                itemDiv.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" data-index="${index}" class="playlist-item-checkbox w-4 h-4 text-primary bg-transparent rounded border-white/10 focus:ring-primary" checked onchange="updatePlaylistSelectionCount()"/>
+                        <span class="font-semibold block truncate max-w-sm text-xs text-on-surface">${item.title}</span>
+                    </div>
+                    <span class="text-on-surface-variant font-mono-sm text-[10px]">${item.duration ? Math.floor(item.duration / 60) + ":" + (item.duration % 60).toString().padStart(2, '0') : 'HD'}</span>
+                `;
+                list.appendChild(itemDiv);
+            });
+        }
+
+        function toggleSelectAllPlaylist(master) {
+            document.querySelectorAll('.playlist-item-checkbox').forEach(cb => {
+                cb.checked = master.checked;
+            });
+            updatePlaylistSelectionCount();
+        }
+
+        function updatePlaylistSelectionCount() {
+            const checked = document.querySelectorAll('.playlist-item-checkbox:checked').length;
+            document.getElementById('playlistEstSize').innerText = `${checked} items selected`;
+        }
+
+        function backToHomeDefault() {
+            document.getElementById('home-analysis-view').classList.add('hidden');
+            clearUrl();
+        }
+
+        function setDownloadMode(mode) {
+            appState.downloadMode = mode;
+            const modes = ['video', 'audio', 'thumb'];
+            
+            if (mode === 'audio') {
+                document.getElementById('audioFormatOptions').classList.remove('hidden');
+                document.getElementById('videoQualitySection').classList.add('hidden');
+                document.getElementById('filenameExtensionLabel').innerText = "." + document.getElementById('audioFormatSelect').value;
+            } else if (mode === 'thumb') {
+                document.getElementById('audioFormatOptions').classList.add('hidden');
+                document.getElementById('videoQualitySection').classList.add('hidden');
+                document.getElementById('filenameExtensionLabel').innerText = ".jpg";
+            } else {
+                document.getElementById('audioFormatOptions').classList.add('hidden');
+                document.getElementById('videoQualitySection').classList.remove('hidden');
+                document.getElementById('filenameExtensionLabel').innerText = ".mp4";
+            }
+
+            modes.forEach(m => {
+                const btn = document.getElementById(`mode-${m}`);
+                if (m === mode) {
+                    btn.className = "flex-1 py-2 rounded-xl text-xs font-bold transition-all bg-primary text-on-primary shadow-lg shadow-primary/10";
+                } else {
+                    btn.className = "flex-1 py-2 rounded-xl text-xs font-bold transition-all border border-white/10 text-on-surface-variant hover:text-on-surface";
+                }
+            });
+        }
+
+        document.getElementById('audioFormatSelect').addEventListener('change', (e) => {
+            if (appState.downloadMode === 'audio') {
+                document.getElementById('filenameExtensionLabel').innerText = "." + e.target.value;
+            }
+        });
+
+        function selectQuality(qual) {
+            appState.qualitySelected = qual;
+            const quals = ['4k', '1080p', '720p', '360p'];
+            quals.forEach(q => {
+                const card = document.getElementById(`qual-${q}`);
+                if (q === qual) {
+                    card.className = "border-2 border-primary bg-primary/10 p-2 rounded-xl cursor-pointer flex flex-col items-center justify-center transition-all";
+                } else {
+                    card.className = "border border-white/10 bg-white/5 p-2 rounded-xl cursor-pointer flex flex-col items-center justify-center hover:bg-white/10 transition-all";
+                }
+            });
+        }
+
+        // Trigger active media download through backend threads
+        function startLiveDownloadSim() {
+            const video = appState.analyzedVideo;
+            
+            if (video.isPlaylist) {
+                startPlaylistBatchDownload();
+                return;
+            }
+            
+            const ext = appState.downloadMode === 'audio' ? document.getElementById('audioFormatSelect').value : (appState.downloadMode === 'thumb' ? 'jpg' : 'mp4');
+            const filename = document.getElementById('analysisFilenameInput').value.trim() || "download";
+            const speedLimit = document.getElementById('downloadSpeedLimit').value;
+            const saveDir = document.getElementById('saveDirInput').value;
+            
+            fetch('/api/download', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: document.getElementById('ytUrlInput').value.trim(),
+                    quality: appState.downloadMode === 'audio' ? 'Audio only' : (appState.downloadMode === 'thumb' ? 'Thumbnail' : appState.qualitySelected),
+                    filename: filename,
+                    thumbnail: video.thumbnail,
+                    audio_format: document.getElementById('audioFormatSelect').value,
+                    audio_bitrate: document.getElementById('audioBitrateSelect').value,
+                    save_dir: saveDir,
+                    ratelimit: speedLimit ? parseInt(speedLimit) : null,
+                    cookies_browser: localStorage.getItem('flow-cookies-browser') || '',
+                    cookies_text: localStorage.getItem('flow-manual-cookies') || '',
+                    user_agent: navigator.userAgent
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                showToast("Download Queued", `Started download for: ${filename}.${ext}`, "success");
+                navigateTo('downloads');
+                backToHomeDefault();
+                startDashboardPolling();
+            })
+            .catch(err => {
+                showToast("Queue Error", "Failed to start download: " + err.message, "error");
+            });
+        }
+
+        function startPlaylistBatchDownload() {
+            const checkedBoxes = document.querySelectorAll('.playlist-item-checkbox:checked');
+            const selectedItems = [];
+            checkedBoxes.forEach(cb => {
+                const idx = parseInt(cb.getAttribute('data-index'));
+                selectedItems.push(appState.analyzedVideo.entries[idx]);
+            });
+            
+            if (selectedItems.length === 0) {
+                showToast("Validation Error", "Please select at least one item to download!", "error");
+                return;
+            }
+            
+            fetch('/api/download/batch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    items: selectedItems,
+                    quality: appState.downloadMode === 'audio' ? 'Audio only' : '720p',
+                    save_dir: document.getElementById('saveDirInput').value,
+                    audio_format: document.getElementById('audioFormatSelect').value,
+                    audio_bitrate: document.getElementById('audioBitrateSelect').value,
+                    ratelimit: document.getElementById('downloadSpeedLimit').value ? parseInt(document.getElementById('downloadSpeedLimit').value) : null,
+                    cookies_browser: localStorage.getItem('flow-cookies-browser') || '',
+                    cookies_text: localStorage.getItem('flow-manual-cookies') || '',
+                    user_agent: navigator.userAgent
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                showToast("Batch Queued", `Started batch download for ${selectedItems.length} items.`, "success");
+                navigateTo('downloads');
+                backToHomeDefault();
+                startDashboardPolling();
+            })
+            .catch(err => {
+                showToast("Queue Error", "Failed to start batch: " + err.message, "error");
+            });
+        }
+
+        // Multi-threaded Polling loops
+        function startDashboardPolling() {
+            if (activePollInterval) clearInterval(activePollInterval);
+            fetchActiveDownloads();
+            activePollInterval = setInterval(fetchActiveDownloads, 1000);
+        }
+
+        function fetchActiveDownloads() {
+            fetch('/api/downloads')
+            .then(res => res.json())
+            .then(data => {
+                // Update badge with active downloads count
+                const activeCount = data.filter(dl => dl.status !== 'Completed' && dl.status !== 'Cancelled' && !dl.status.startsWith('Error')).length;
+                const badge = document.getElementById('activeDownloadsBadge');
+                if (badge) {
+                    if (activeCount > 0) {
+                        badge.innerText = activeCount;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+                
+                appState.downloads = data;
+                
+                if (appState.currentNavPage === 'downloads') {
+                    renderDownloads();
+                }
+            })
+            .catch(() => {});
+        }
+
+        function renderDownloads() {
+            const container = document.getElementById('downloadsQueueGrid');
+            const summary = document.getElementById('activeDownloadsSummary');
+            if (!container) return;
+
+            const activeThreads = appState.downloads.filter(dl => dl.status !== 'Completed' && dl.status !== 'Cancelled' && !dl.status.startsWith('Error'));
+            if (summary) {
+                summary.innerText = activeThreads.length > 0 ? `${activeThreads.length} downloads active` : 'No active downloads in pipeline';
+            }
+
+            if (appState.downloads.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-2 text-center py-12 glass-panel rounded-3xl border border-white/5 w-full">
+                        <span class="material-symbols-outlined text-[48px] text-on-surface-variant/40 block mb-3">cloud_off</span>
+                        <p class="text-xs text-on-surface-variant/60 font-semibold">No active downloading threads found.</p>
+                    </div>`;
+                return;
+            }
+
+            // Remove placeholder if present
+            const placeholder = container.querySelector('.col-span-2');
+            if (placeholder) container.innerHTML = '';
+
+            // Clean up cards no longer in current state
+            const currentIds = new Set(appState.downloads.map(dl => dl.id));
+            Array.from(container.children).forEach(child => {
+                const id = child.id.replace('card-', '');
+                if (!currentIds.has(id)) {
+                    child.remove();
+                }
+            });
+
+            appState.downloads.forEach(dl => {
+                let card = document.getElementById(`card-${dl.id}`);
+                let percent = Math.floor(dl.progress || 0);
+                const radius = 26;
+                const circumference = radius * 2 * Math.PI;
+                const dashoffset = circumference - (percent / 100) * circumference;
+
+                // Handle completion toast notification transition!
+                const prevDl = appState.previousDownloads ? appState.previousDownloads.find(p => p.id === dl.id) : null;
+                if (prevDl && prevDl.status !== 'Completed' && dl.status === 'Completed') {
+                    showToast("Download Complete", `Successfully downloaded: ${dl.title}`, "success");
+                }
+
+                if (!card) {
+                    card = document.createElement('div');
+                    card.id = `card-${dl.id}`;
+                    card.className = "glass-panel p-5 rounded-3xl flex flex-col gap-4 relative overflow-hidden border border-white/5 group";
+                    container.appendChild(card);
+                    
+                    // Initial build of card contents
+                    card.innerHTML = `
+                        <div class="flex gap-4">
+                            <img class="w-24 h-16 rounded-xl object-cover border border-white/5 shrink-0" src="${dl.thumbnail || 'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?auto=format&fit=crop&q=80&w=256&h=144'}" alt="Thumbnail"/>
+                            <div class="flex-1 min-w-0">
+                                <span class="text-xs font-bold text-on-surface block truncate card-title" title="${dl.title}">${dl.title}</span>
+                                <div class="flex items-center gap-2 mt-1.5">
+                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase card-status"></span>
+                                    <span class="text-[9px] text-on-surface-variant card-meta"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="active-progress-section"></div>
+                        <div class="card-footer-actions"></div>
+                        <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity card-action-overlay flex gap-1"></div>
+                    `;
+                }
+
+                // Update text elements
+                card.querySelector('.card-title').innerText = dl.title;
+                
+                const statusSpan = card.querySelector('.card-status');
+                statusSpan.innerText = dl.status;
+                if (dl.status === 'Completed') {
+                    statusSpan.className = "text-[9px] font-bold px-1.5 py-0.5 rounded uppercase card-status bg-emerald-500/10 text-emerald-400";
+                } else if (dl.status.startsWith('Error')) {
+                    statusSpan.className = "text-[9px] font-bold px-1.5 py-0.5 rounded uppercase card-status bg-error/10 text-error";
+                } else {
+                    statusSpan.className = "text-[9px] font-bold px-1.5 py-0.5 rounded uppercase card-status bg-primary/10 text-primary";
+                }
+
+                card.querySelector('.card-meta').innerText = `${dl.total || 'N/A'} • ${percent}%`;
+
+                // Update active progress stats block (avoiding canvas rebuilds)
+                const progressDiv = card.querySelector('.active-progress-section');
+                if (dl.status !== 'Completed' && !dl.status.startsWith('Error') && dl.status !== 'Cancelled') {
+                    if (progressDiv.innerHTML === '') {
+                        progressDiv.innerHTML = `
+                            <div class="flex items-center gap-6 pt-2">
+                                <div class="relative w-16 h-16 flex items-center justify-center shrink-0">
+                                    <svg class="w-full h-full">
+                                        <circle class="text-white/5" cx="32" cy="32" fill="transparent" r="26" stroke="currentColor" stroke-width="4"></circle>
+                                        <circle class="text-primary progress-ring-circle" cx="32" cy="32" fill="transparent" r="26" stroke="currentColor" stroke-linecap="round" stroke-width="4" stroke-dasharray="${circumference}" stroke-dashoffset="${dashoffset}"></circle>
+                                    </svg>
+                                    <span class="absolute text-[10px] font-bold text-on-surface progress-percent-text">${percent}%</span>
+                                </div>
+                                <div class="flex-1 grid grid-cols-2 gap-2 text-[10px] text-on-surface-variant progress-grid-stats">
+                                    <div>Speed: <strong class="text-on-surface font-semibold stat-speed">${dl.speed}</strong></div>
+                                    <div>ETA: <strong class="text-on-surface font-semibold stat-eta">${dl.eta}</strong></div>
+                                    <div>Transferred: <strong class="text-on-surface font-semibold stat-downloaded">${dl.downloaded}</strong></div>
+                                    <div>Size: <strong class="text-on-surface font-semibold stat-total">${dl.total}</strong></div>
+                                </div>
+                            </div>
+                            <canvas id="chart-${dl.id}" class="w-full h-10 bg-white/5 rounded-xl border border-white/5 mt-1" width="300" height="40"></canvas>
+                        `;
+                    } else {
+                        // Just update values and attributes
+                        const ring = progressDiv.querySelector('.progress-ring-circle');
+                        if (ring) {
+                            ring.style.strokeDashoffset = dashoffset;
+                        }
+                        progressDiv.querySelector('.progress-percent-text').innerText = `${percent}%`;
+                        progressDiv.querySelector('.stat-speed').innerText = dl.speed;
+                        progressDiv.querySelector('.stat-eta').innerText = dl.eta;
+                        progressDiv.querySelector('.stat-downloaded').innerText = dl.downloaded;
+                        progressDiv.querySelector('.stat-total').innerText = dl.total;
+                    }
+                    
+                    updateSpeedChart(`chart-${dl.id}`, dl.speed, dl.id);
+                } else {
+                    progressDiv.innerHTML = ''; // Clear progress section if completed/failed
+                }
+
+                // Update footers
+                const footer = card.querySelector('.card-footer-actions');
+                if (dl.file_path && dl.status === 'Completed') {
+                    if (footer.innerHTML === '') {
+                        footer.innerHTML = `
+                            <div class="flex gap-2 pt-2 border-t border-white/5">
+                                <button onclick="revealSystemPath('${dl.file_path.replace(/\\/g, '\\\\')}')" class="flex-1 py-1.5 bg-white/5 hover:bg-white/10 text-[10px] font-bold rounded-lg border border-white/5 transition-all text-on-surface text-center">Reveal File</button>
+                            </div>
+                        `;
+                    }
+                } else if (dl.status.startsWith('Error')) {
+                    if (footer.innerHTML === '') {
+                        footer.innerHTML = `
+                            <div class="flex gap-2 pt-2 border-t border-white/5">
+                                <button onclick="openDebugLogs('${dl.id}')" class="flex-1 py-1.5 border border-error/20 bg-error/5 hover:bg-error/15 text-error text-[10px] font-bold rounded-lg transition-all text-center">Show Debug Logs</button>
+                            </div>
+                        `;
+                    }
+                } else {
+                    footer.innerHTML = '';
+                }
+
+                // Update overlay buttons
+                const overlay = card.querySelector('.card-action-overlay');
+                if (dl.status !== 'Completed' && dl.status !== 'Cancelled' && !dl.status.startsWith('Error')) {
+                    overlay.innerHTML = `
+                        <button onclick="cancelDownload('${dl.id}')" class="p-1.5 bg-black/60 hover:bg-error/20 text-on-surface-variant hover:text-error rounded-lg transition-all" title="Cancel Download">
+                            <span class="material-symbols-outlined text-[16px] block">close</span>
+                        </button>
+                    `;
+                } else {
+                    overlay.innerHTML = `
+                        <button onclick="clearActiveDownload('${dl.id}')" class="p-1.5 bg-black/60 hover:bg-white/10 text-on-surface-variant hover:text-on-surface rounded-lg transition-all" title="Clear Card">
+                            <span class="material-symbols-outlined text-[16px] block">delete</span>
+                        </button>
+                    `;
+                }
+            });
+
+            // Keep reference to previous downloads
+            appState.previousDownloads = JSON.parse(JSON.stringify(appState.downloads));
+        }
+
+        function cancelDownload(downloadId) {
+            fetch(`/api/download/cancel/${downloadId}`, { method: 'POST' })
+            .then(res => res.json())
+            .then(() => {
+                showToast("Cancelled", "Queued download thread aborted.", "error");
+                fetchActiveDownloads();
+            });
+        }
+
+        function cancelAllActiveDownloads() {
+            appState.downloads.forEach(dl => {
+                if (dl.status !== 'Completed' && dl.status !== 'Cancelled' && !dl.status.startsWith('Error')) {
+                    cancelDownload(dl.id);
+                }
+            });
+        }
+
+        function clearActiveDownload(downloadId) {
+            fetch(`/api/download/clear/${downloadId}`, { method: 'POST' })
+            .then(res => res.json())
+            .then(() => {
+                showToast("Cleared", "Card removed from queue page.", "info");
+                fetchActiveDownloads();
+            });
+        }
+
+        let historyFilter = 'all';
+
+        function filterHistory(type) {
+            historyFilter = type;
+            const filters = ['all', 'video', 'audio'];
+            filters.forEach(f => {
+                const btn = document.getElementById(`hist-filter-${f}`);
+                if (f === type) {
+                    btn.className = "px-3 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-brand-darkBg text-primary shadow-sm transition-all";
+                } else {
+                    btn.className = "px-3 py-1 text-xs font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all";
+                }
+            });
+            fetchHistory();
+        }
+
+        function fetchHistory() {
+            fetch('/api/history')
+            .then(res => res.json())
+            .then(data => {
+                appState.history = data;
+                renderHistory();
+                renderHomeRecent();
+            });
+        }
+
+        function renderHistory() {
+            const grid = document.getElementById('historyGrid');
+            grid.innerHTML = '';
+
+            const query = document.getElementById('historySearch').value.toLowerCase().trim();
+            const sort = document.getElementById('historySort').value;
+
+            let filtered = appState.history.filter(item => {
+                const matchType = historyFilter === 'all' || item.type === historyFilter;
+                const matchQuery = !query || item.title.toLowerCase().includes(query);
+                return matchType && matchQuery;
+            });
+
+            if (sort === 'size') {
+                filtered.sort((a, b) => {
+                    const sizeA = a.size.includes('GB') ? parseFloat(a.size) * 1024 : parseFloat(a.size);
+                    const sizeB = b.size.includes('GB') ? parseFloat(b.size) * 1024 : parseFloat(b.size);
+                    return sizeB - sizeA;
+                });
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-3 text-center py-12 glass-panel rounded-3xl border border-white/5">
+                        <span class="material-symbols-outlined text-[48px] text-on-surface-variant/40 block mb-3">folder_zip</span>
+                        <p class="text-xs text-on-surface-variant/60 font-semibold">No downloaded files in library match.</p>
+                    </div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group cursor-pointer";
+                card.onclick = () => {
+                    if (item.file_path) revealSystemPath(item.file_path);
+                };
+                card.innerHTML = `
+                    <div class="relative h-40 overflow-hidden bg-black/20">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${item.thumbnail || 'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?auto=format&fit=crop&q=80&w=360&h=202'}" alt="Thumbnail"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <div class="absolute bottom-3 right-3 bg-black/80 px-2 py-1 rounded text-[9px] font-bold text-white backdrop-blur-sm border border-white/10 uppercase tracking-wider">${item.quality || 'HD'}</div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <h4 class="font-headline-sm text-xs font-semibold text-on-surface line-clamp-2 leading-snug group-hover:text-primary transition-colors">${item.title}</h4>
+                        <div class="flex items-center justify-between text-[11px] text-on-surface-variant/80 border-t border-white/5 pt-2">
+                            <span class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">${item.type === 'audio' ? 'music_note' : 'video_library'}</span>
+                                ${item.type === 'audio' ? 'Audio/MP3' : 'Video/MP4'}
+                            </span>
+                            <span class="font-bold">${item.size || 'N/A'}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderHomeRecent() {
+            const grid = document.getElementById('homeRecentGrid');
+            grid.innerHTML = '';
+            
+            const recent = appState.history.slice(0, 3);
+            if (recent.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-3 text-center py-10 glass-panel rounded-2xl border border-white/5">
+                        <p class="text-xs text-on-surface-variant/60 font-semibold">Your finished downloads will appear here.</p>
+                    </div>`;
+                return;
+            }
+
+            recent.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group cursor-pointer";
+                card.onclick = () => {
+                    if (item.file_path) revealSystemPath(item.file_path);
+                };
+                card.innerHTML = `
+                    <div class="relative h-40 overflow-hidden bg-black/20">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${item.thumbnail || 'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?auto=format&fit=crop&q=80&w=360&h=202'}" alt="Thumbnail"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <div class="absolute bottom-3 right-3 bg-black/80 px-2 py-1 rounded text-[9px] font-bold text-white backdrop-blur-sm border border-white/10 uppercase tracking-wider">${item.quality || 'HD'}</div>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                        <h4 class="font-headline-sm text-xs font-semibold text-on-surface line-clamp-2 leading-snug group-hover:text-primary transition-colors">${item.title}</h4>
+                        <div class="flex items-center justify-between text-[11px] text-on-surface-variant/80 border-t border-white/5 pt-2">
+                            <span class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">${item.type === 'audio' ? 'music_note' : 'video_library'}</span>
+                                ${item.type === 'audio' ? 'Audio/MP3' : 'Video/MP4'}
+                            </span>
+                            <span class="font-bold">${item.size || 'N/A'}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Open local system file or folder
+        function revealSystemPath(path) {
+            fetch('/api/open', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: path })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) showToast("System Error", "Could not open file: " + data.error, "error");
+            })
+            .catch(() => {
+                showToast("System Error", "Backend open command failed.", "error");
+            });
+        }
+
+        // Settings View sub navigation
+        function switchSettingsTab(tabId) {
+            document.querySelectorAll('.settings-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`settings-view-${tabId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.lg\\:col-span-1 button').forEach(btn => {
+                btn.className = "w-full text-left px-4 py-3 text-xs font-bold rounded-xl text-on-surface-variant hover:bg-white/5 transition-all";
+            });
+            
+            document.getElementById(`settings-tab-${tabId}`).className = "w-full text-left px-4 py-3 text-xs font-bold rounded-xl bg-white/5 text-primary border border-white/5";
+        }
+
+        function setAccentColor(color) {
+            appState.accentColor = color;
+            document.documentElement.style.setProperty('--primary', color);
+            localStorage.setItem('flow-accent', color);
+        }
+
+        // Browse native file browser inside general settings
+        function triggerBrowseDirectoryGeneral() {
+            fetch('/api/browse_directory')
+            .then(res => res.json())
+            .then(data => {
+                if (data.path) {
+                    document.getElementById('settingsSaveDirInput').value = data.path;
+                    document.getElementById('saveDirInput').value = data.path;
+                    localStorage.setItem('flow-save-dir', data.path);
+                    showToast("Path Updated", "Target folder set: " + data.path.substring(0, 30) + "...", "success");
+                }
+            })
+            .catch(err => {
+                showToast("Dialog Error", "Failed to open native folder choose dialog.", "error");
+            });
+        }
+
+        // Browse native file browser inside media analysis
+        function triggerBrowseDirectory() {
+            fetch('/api/browse_directory')
+            .then(res => res.json())
+            .then(data => {
+                if (data.path) {
+                    document.getElementById('saveDirInput').value = data.path;
+                    document.getElementById('settingsSaveDirInput').value = data.path;
+                    localStorage.setItem('flow-save-dir', data.path);
+                    showToast("Path Updated", "Target folder set: " + data.path.substring(0, 30) + "...", "success");
+                }
+            })
+            .catch(err => {
+                showToast("Dialog Error", "Failed to open native folder choose dialog.", "error");
+            });
+        }
+
+        function saveGeneralConfig() {
+            const path = document.getElementById('settingsSaveDirInput').value.trim();
+            localStorage.setItem('flow-save-dir', path);
+            document.getElementById('saveDirInput').value = path;
+            showToast("Settings Saved", "General config directories updated.", "success");
+        }
+
+        function saveCookiesConfigDirect() {
+            localStorage.setItem('flow-cookies-browser', document.getElementById('browserCookiesSelect').value);
+            localStorage.setItem('flow-manual-cookies', document.getElementById('manualCookiesTextarea').value);
+            showToast("Auth Saved", "Browser cookies context saved successfully.", "success");
+        }
+
+        // Load cookies and settings config
+        function loadSettingsConfig() {
+            document.getElementById('browserCookiesSelect').value = localStorage.getItem('flow-cookies-browser') || '';
+            document.getElementById('manualCookiesTextarea').value = localStorage.getItem('flow-manual-cookies') || '';
+            
+            const savedPath = localStorage.getItem('flow-save-dir') || '/Users/yogipatel/Downloads';
+            document.getElementById('settingsSaveDirInput').value = savedPath;
+            document.getElementById('saveDirInput').value = savedPath;
+        }
+
+        // Bootup configs initialization
+        const savedTheme = localStorage.getItem('flow-theme') || 'dark';
+        const savedAccent = localStorage.getItem('flow-accent') || '#afc6ff';
+        
+        if (savedTheme === 'light') {
+            document.documentElement.classList.remove('dark');
+            themeIcon.innerText = "light_mode";
+            themeToggle.querySelector('span.text-\\[10px\\]').innerText = "Light";
+            appState.isThemeDark = false;
+        } else {
+            document.documentElement.classList.add('dark');
+            themeIcon.innerText = "dark_mode";
+            themeToggle.querySelector('span.text-\\[10px\\]').innerText = "Dark";
+            appState.isThemeDark = true;
+        }
+        setAccentColor(savedAccent);
+        loadSettingsConfig();
+
+        navigateTo('home');
+        startDashboardPolling();
+
+        // Auto-analyze URL upon typing or pasting
+        let autoAnalyzeTimeout = null;
+        const urlInputEl = document.getElementById('ytUrlInput');
+        if (urlInputEl) {
+            urlInputEl.addEventListener('input', (e) => {
+                const val = e.target.value.trim();
+                if (autoAnalyzeTimeout) clearTimeout(autoAnalyzeTimeout);
+                
+                if (val.startsWith('http://') || val.startsWith('https://')) {
+                    autoAnalyzeTimeout = setTimeout(() => {
+                        analyzeUrl();
+                    }, 500);
+                }
+            });
+
+            urlInputEl.addEventListener('paste', () => {
+                setTimeout(() => {
+                    analyzeUrl();
+                }, 50);
+            });
+        }
+    </script>
+</body>
+</html>

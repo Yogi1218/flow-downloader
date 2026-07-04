@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  flow-web:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=production
+    restart: always
