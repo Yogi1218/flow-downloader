@@ -184,9 +184,52 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(128, 128, 128, 0.3);
         }
+        /* Mobile: sidebar hidden by default, shown as overlay */
+        @media (max-width: 1023px) {
+            #sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            #sidebar.mobile-open {
+                transform: translateX(0);
+                box-shadow: 0 0 60px rgba(0,0,0,0.6);
+            }
+            #mainContent {
+                margin-left: 0 !important;
+            }
+            #topHeader {
+                width: 100% !important;
+                left: 0 !important;
+            }
+        }
+        /* Mobile overlay backdrop */
+        #sidebarOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 49;
+            backdrop-filter: blur(2px);
+        }
+        #sidebarOverlay.active { display: block; }
+        /* Bottom nav bar (mobile only) */
+        #bottomNav {
+            display: none;
+        }
+        @media (max-width: 1023px) {
+            #bottomNav {
+                display: flex;
+            }
+            #mainContent {
+                padding-bottom: 80px;
+            }
+        }
     </style>
 </head>
 <body class="flex min-h-screen">
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebarOverlay" onclick="closeSidebar()"></div>
 
     <!-- Toast Notifications Container -->
     <div id="toastContainer" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3"></div>
@@ -224,6 +267,26 @@
     </div>
 
     <!-- Sidebar Navigation -->
+    <!-- Bottom Navigation Bar (Mobile Only) -->
+    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel border-t border-white/10 h-16 items-center justify-around px-2">
+        <button onclick="navigateTo('home'); closeSidebar()" id="bnav-home" class="flex flex-col items-center gap-0.5 px-4 py-2 text-primary">
+            <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">home</span>
+            <span class="text-[10px] font-semibold">Home</span>
+        </button>
+        <button onclick="navigateTo('downloads'); closeSidebar()" id="bnav-downloads" class="flex flex-col items-center gap-0.5 px-4 py-2 text-on-surface-variant">
+            <span class="material-symbols-outlined text-[22px]">download</span>
+            <span class="text-[10px] font-semibold">Downloads</span>
+        </button>
+        <button onclick="navigateTo('history'); closeSidebar()" id="bnav-history" class="flex flex-col items-center gap-0.5 px-4 py-2 text-on-surface-variant">
+            <span class="material-symbols-outlined text-[22px]">history</span>
+            <span class="text-[10px] font-semibold">History</span>
+        </button>
+        <button onclick="navigateTo('settings'); closeSidebar()" id="bnav-settings" class="flex flex-col items-center gap-0.5 px-4 py-2 text-on-surface-variant">
+            <span class="material-symbols-outlined text-[22px]">settings</span>
+            <span class="text-[10px] font-semibold">Settings</span>
+        </button>
+    </nav>
+
     <aside class="w-[260px] h-full fixed left-0 top-0 glass-panel flex flex-col py-margin-main border-r border-white/10 z-50 transition-all duration-300" id="sidebar">
         <!-- Sidebar Brand with Water Logo -->
         <div class="px-8 mb-8 flex items-center justify-between">
@@ -289,7 +352,7 @@
     <!-- Main Content Panel -->
     <main class="ml-[260px] flex-1 min-h-screen relative transition-all duration-300" id="mainContent">
         <!-- Header -->
-        <header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 glass-panel border-b border-white/10 flex items-center justify-between px-margin-main z-40 transition-all duration-300" id="topHeader">
+        <header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 glass-panel border-b border-white/10 flex items-center justify-between px-4 md:px-margin-main z-40 transition-all duration-300" id="topHeader">
             <div class="flex items-center gap-4">
                 <button class="lg:hidden p-2 text-on-surface-variant hover:text-on-surface" id="sidebarOpenToggle">
                     <span class="material-symbols-outlined">menu</span>
@@ -306,40 +369,40 @@
         </header>
 
         <!-- Dynamic Main Views -->
-        <div class="pt-24 pb-margin-main px-margin-main max-w-6xl mx-auto space-y-lg">
+        <div class="pt-20 pb-6 px-4 md:pt-24 md:pb-margin-main md:px-margin-main max-w-6xl mx-auto space-y-lg">
 
             <!-- PAGE: HOME -->
             <div id="page-home" class="page-view space-y-lg">
                 <!-- Hero section -->
-                <div class="relative overflow-hidden pt-12 pb-8 flex flex-col items-center text-center">
+                <div class="relative overflow-hidden pt-8 md:pt-12 pb-8 flex flex-col items-center text-center">
                     <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/10 blur-[100px] rounded-full pointer-events-none"></div>
-                    <div class="relative z-10 max-w-3xl">
-                        <h2 class="font-display-lg text-display-lg text-on-surface mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-3 duration-300">
+                    <div class="relative z-10 max-w-3xl w-full">
+                        <h2 class="text-3xl md:text-5xl font-extrabold text-on-surface mb-4 md:mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-3 duration-300">
                             Download Media <span class="text-primary">Beautifully</span>
                         </h2>
-                        <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 px-12 leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-300 delay-100">
+                        <p class="text-sm md:text-lg text-on-surface-variant mb-8 md:mb-10 px-4 md:px-12 leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-300 delay-100">
                             Paste a link from your favorite platform and download it instantly.
                         </p>
                         
                         <!-- Main Link Input Control -->
                         <div class="glass-panel p-2 rounded-2xl shadow-2xl flex items-center gap-2 w-full max-w-2xl mx-auto border-white/10 focus-within:ring-2 focus-within:ring-primary/40 transition-all animate-in fade-in slide-in-from-bottom-4 duration-300 delay-200">
-                            <div class="flex-1 px-4 flex items-center gap-3">
-                                <span class="material-symbols-outlined text-on-surface-variant">link</span>
-                                <input id="ytUrlInput" class="w-full bg-transparent border-none text-on-surface focus:ring-0 placeholder:text-on-surface-variant/40 font-body-lg text-base outline-none border-0" placeholder="Paste or drop a video, audio, or media URL…" type="text"/>
+                            <div class="flex-1 px-3 md:px-4 flex items-center gap-2 md:gap-3 min-w-0">
+                                <span class="material-symbols-outlined text-on-surface-variant shrink-0 text-[20px]">link</span>
+                                <input id="ytUrlInput" class="w-full bg-transparent border-none text-on-surface focus:ring-0 placeholder:text-on-surface-variant/40 text-sm md:text-base outline-none border-0 min-w-0" placeholder="Paste or drop a media URL…" type="text"/>
                             </div>
-                            <div class="pr-2">
-                                <button onclick="clearUrl()" class="px-4 py-2 hover:bg-surface-variant/40 rounded-xl text-on-surface-variant font-medium transition-colors text-sm flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-sm">close</span>
-                                    Clear
+                            <div class="pr-1 md:pr-2 shrink-0">
+                                <button onclick="clearUrl()" class="p-2 md:px-4 md:py-2 hover:bg-surface-variant/40 rounded-xl text-on-surface-variant font-medium transition-colors text-sm flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[18px]">close</span>
+                                    <span class="hidden md:inline">Clear</span>
                                 </button>
                             </div>
                         </div>
                         
                         <!-- Supported Platforms Section -->
-                        <div class="mt-20 max-w-4xl mx-auto text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300 delay-300">
-                            <h4 class="text-sm font-semibold tracking-[1.2px] text-primary uppercase">WORKS WITH 1,000+ WEBSITES</h4>
+                        <div class="mt-10 md:mt-20 max-w-4xl mx-auto text-center space-y-3 md:space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300 delay-300">
+                            <h4 class="text-xs md:text-sm font-semibold tracking-[1.2px] text-primary uppercase">WORKS WITH 1,000+ WEBSITES</h4>
 
-                            <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
+                            <div class="pt-1 md:pt-2 flex flex-wrap items-center justify-center gap-2 md:gap-3">
                                 <!-- YouTube -->
                                 <div title="Videos, Shorts & Playlists" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-red-500 shrink-0"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
@@ -891,17 +954,45 @@
             }
         }
 
-        // Toggle Sidebar on mobile
-        document.getElementById('sidebarOpenToggle').addEventListener('click', () => {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.remove('-translate-x-full');
-            sidebar.classList.add('translate-x-0');
-        });
-        document.getElementById('sidebarCloseToggle').addEventListener('click', () => {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.add('-translate-x-full');
-            sidebar.classList.remove('translate-x-0');
-        });
+        }
+
+        // Mobile Sidebar Open/Close
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('mobile-open');
+            document.getElementById('sidebarOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('sidebarOpenToggle').addEventListener('click', openSidebar);
+        document.getElementById('sidebarCloseToggle').addEventListener('click', closeSidebar);
+
+        // Sync bottom nav active state
+        const _origNavigateTo = navigateTo;
+        function updateBottomNav(pageId) {
+            ['home','downloads','history','settings'].forEach(id => {
+                const btn = document.getElementById(`bnav-${id}`);
+                if (!btn) return;
+                if (id === pageId) {
+                    btn.classList.add('text-primary');
+                    btn.classList.remove('text-on-surface-variant');
+                    btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+                } else {
+                    btn.classList.remove('text-primary');
+                    btn.classList.add('text-on-surface-variant');
+                    btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0";
+                }
+            });
+        }
+        const _navTo = navigateTo;
+        window.navigateTo = function(pageId) {
+            _navTo(pageId);
+            updateBottomNav(pageId);
+        };
 
         // Theme Toggle Handler
         const themeToggle = document.getElementById('themeToggle');
