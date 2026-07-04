@@ -313,19 +313,19 @@
                 <!-- Hero section -->
                 <div class="relative overflow-hidden pt-12 pb-8 flex flex-col items-center text-center">
                     <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-primary/10 blur-[100px] rounded-full pointer-events-none"></div>
-                    <div class="relative z-10 max-w-3xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                        <h2 class="font-display-lg text-display-lg text-on-surface mb-6 tracking-tight">
+                    <div class="relative z-10 max-w-3xl">
+                        <h2 class="font-display-lg text-display-lg text-on-surface mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-3 duration-300">
                             Download Media <span class="text-primary">Beautifully</span>
                         </h2>
-                        <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 px-12 leading-relaxed">
-                            Paste a link from YouTube, Instagram, TikTok, X, Reddit, or any of 1,000+ supported websites.
+                        <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 px-12 leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-300 delay-100">
+                            Paste a link from your favorite platform and download it instantly.
                         </p>
                         
                         <!-- Main Link Input Control -->
-                        <div class="glass-panel p-2 rounded-2xl shadow-2xl flex items-center gap-2 w-full max-w-2xl mx-auto border-white/10 focus-within:ring-2 focus-within:ring-primary/40 transition-all">
+                        <div class="glass-panel p-2 rounded-2xl shadow-2xl flex items-center gap-2 w-full max-w-2xl mx-auto border-white/10 focus-within:ring-2 focus-within:ring-primary/40 transition-all animate-in fade-in slide-in-from-bottom-4 duration-300 delay-200">
                             <div class="flex-1 px-4 flex items-center gap-3">
                                 <span class="material-symbols-outlined text-on-surface-variant">link</span>
-                                <input id="ytUrlInput" class="w-full bg-transparent border-none text-on-surface focus:ring-0 placeholder:text-on-surface-variant/40 font-body-lg text-base outline-none border-0" placeholder="Paste a link from YouTube, Instagram, TikTok, X, Reddit..." type="text"/>
+                                <input id="ytUrlInput" class="w-full bg-transparent border-none text-on-surface focus:ring-0 placeholder:text-on-surface-variant/40 font-body-lg text-base outline-none border-0" placeholder="Paste or drop a video, audio, or media URL…" type="text"/>
                             </div>
                             <div class="flex gap-2">
                                 <button onclick="clearUrl()" class="px-4 py-2 hover:bg-surface-variant/40 rounded-xl text-on-surface-variant font-medium transition-colors text-sm">Clear</button>
@@ -337,72 +337,72 @@
                         </div>
                         
                         <!-- Supported Platforms Section -->
-                        <div class="mt-20 max-w-4xl mx-auto text-center space-y-4">
-                            <h4 class="font-label-caps text-xs tracking-widest text-primary uppercase font-bold">WORKS WITH 1,000+ WEBSITES</h4>
+                        <div class="mt-20 max-w-4xl mx-auto text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-300 delay-300">
+                            <h4 class="text-sm font-semibold tracking-[1.2px] text-primary uppercase">WORKS WITH 1,000+ WEBSITES</h4>
 
                             <div class="pt-2 flex flex-wrap items-center justify-center gap-3">
                                 <!-- YouTube -->
-                                <div class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
+                                <div title="Videos, Shorts & Playlists" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-red-500 shrink-0"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                                     <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors font-body-md">YouTube</span>
                                 </div>
 
                                 <!-- Instagram -->
-                                <div class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
+                                <div title="Reels, Posts & Stories" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-pink-500 shrink-0"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                                     <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors font-body-md">Instagram</span>
                                 </div>
 
                                 <!-- TikTok -->
-                                <div class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
+                                <div title="Videos & Slideshows" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-on-surface shrink-0"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.57-1.32 1.54-1.36 2.53-.08 1.42.75 2.81 2.05 3.39 1.25.56 2.77.34 3.79-.52.79-.68 1.26-1.71 1.28-2.75.03-4.97.01-9.94.02-14.91z"/></svg>
                                     <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors font-body-md">TikTok</span>
                                 </div>
 
                                 <!-- X (Twitter) -->
-                                <div class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
+                                <div title="Videos & Media" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-on-surface shrink-0"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                                     <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors font-body-md">X (Twitter)</span>
                                 </div>
 
                                 <!-- Facebook -->
-                                <div class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
+                                <div title="Videos & Reels" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-blue-500 shrink-0"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                                     <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors font-body-md">Facebook</span>
                                 </div>
 
                                 <!-- Reddit -->
-                                <div class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
+                                <div title="Videos & GIFs" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-orange-500 shrink-0"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.562-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.688-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
                                     <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors font-body-md">Reddit</span>
                                 </div>
 
                                 <!-- Pinterest -->
-                                <div class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
+                                <div title="Pins & Videos" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-rose-600 shrink-0"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.367 18.62 0 12.017 0z"/></svg>
                                     <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors font-body-md">Pinterest</span>
                                 </div>
 
                                 <!-- Twitch -->
-                                <div class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
+                                <div title="Streams & Clips" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-purple-500 shrink-0"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0h1.714v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>
                                     <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors font-body-md">Twitch</span>
                                 </div>
 
                                 <!-- Vimeo -->
-                                <div class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
+                                <div title="HD Videos" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-sky-500 shrink-0"><path d="M23.977 6.416c-.105 2.338-1.739 5.543-4.894 9.609-3.268 4.247-6.026 6.37-8.29 6.37-1.409 0-2.578-1.294-3.553-3.881L4.57 8.786C3.901 6.31 3.13 5.074 2.254 5.074c-.198 0-.897.42-2.099 1.258L0 4.966c1.332-1.171 2.658-2.342 3.977-3.513 1.802-1.554 3.149-2.383 4.045-2.486 2.122-.244 3.431 1.206 3.928 4.351.534 3.393.902 5.503 1.106 6.331.609 2.783 1.267 4.175 1.974 4.175.547 0 1.229-.863 2.048-2.59 0.819-1.727 1.267-3.036 1.344-3.928.152-1.523-.427-2.285-1.739-2.285-.609 0-1.25.137-1.921.411 1.25-4.084 3.635-6.042 7.155-5.874 2.594.122 3.827 1.631 3.701 4.527z"/></svg>
                                     <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors font-body-md">Vimeo</span>
                                 </div>
 
                                 <!-- SoundCloud -->
-                                <div class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
+                                <div title="Audio & Playlists" class="px-3.5 py-2 glass-panel bg-white/5 border border-white/10 rounded-xl shadow-sm flex items-center gap-2 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 transition-all duration-200 group cursor-default">
                                     <svg viewBox="0 0 24 24" class="w-4 h-4 fill-amber-500 shrink-0"><path d="M1.175 12.225c-.051 0-.094.047-.102.102l-.29 3.093.29 3.055c.008.055.051.094.102.094.055 0 .094-.039.102-.094l.325-3.055-.325-3.093c-.008-.055-.047-.102-.102-.102zm-1.07.727c-.055 0-.098.047-.105.102l-.18 2.367.18 2.336c.007.055.05.094.105.094.051 0 .094-.039.098-.094l.207-2.336-.207-2.367c-.004-.055-.047-.102-.098-.102zm2.148-1.508c-.055 0-.102.047-.105.102l-.371 3.867.371 3.828c.003.055.05.094.105.094.051 0 .098-.039.102-.094l.414-3.828-.414-3.867c-.004-.055-.051-.102-.102-.102zm1.078-.711c-.055 0-.102.047-.105.102l-.45 4.578.45 4.539c.003.055.05.094.105.094.051 0 .098-.039.102-.094l.504-4.539-.504-4.578c-.004-.055-.051-.102-.102-.102zm1.082-.695c-.055 0-.102.047-.105.102l-.527 5.273.527 5.234c.003.055.05.094.105.094.051 0 .098-.039.102-.094l.594-5.234-.594-5.273c-.004-.055-.051-.102-.102-.102zm1.078-.508c-.055 0-.102.047-.105.102l-.609 5.781.609 5.742c.003.055.05.094.105.094.051 0 .098-.039.102-.094l.68-5.742-.68-5.781c-.004-.055-.051-.102-.102-.102zm1.078-.602c-.055 0-.102.047-.105.102l-.688 6.383.688 6.344c.003.055.05.094.105.094.051 0 .098-.039.102-.094l.77-6.344-.77-6.383c-.004-.055-.051-.102-.102-.102zm1.078-.586c-.055 0-.102.047-.105.102l-.766 6.969.766 6.93c.003.055.05.094.105.094.051 0 .098-.039.102-.094l.859-6.93-.859-6.969c-.004-.055-.051-.102-.102-.102zm1.078-.184c-.055 0-.102.047-.105.102l-.844 7.152.844 7.113c.008.055.055.094.102.094.055 0 .102-.039.105-.094l.949-7.113-.949-7.152c-.004-.055-.051-.102-.102-.102zm1.082-.695c-.055 0-.102.047-.105.102l-.93 7.848.93 7.809c.003.055.05.094.105.094.051 0 .098-.039.102-.094l1.039-7.809-1.039-7.848c-.004-.055-.051-.102-.102-.102zm1.758-1.508c-.047 0-.094.039-.102.094l-1.016 9.355 1.016 9.316c.008.055.055.094.102.094.055 0 .102-.039.105-.094l1.137-9.316-1.137-9.355c-.003-.055-.05-.094-.105-.094zm11.391 7.215c-.68 0-1.328.168-1.906.465a7.172 7.172 0 0 0-5.742-2.887c-.313 0-.617.027-.914.078v11.75c.305.047.617.074.938.074h7.625c2.613 0 4.734-2.121 4.734-4.738 0-2.613-2.121-4.742-4.734-4.742z"/></svg>
                                     <span class="text-xs font-semibold text-on-surface group-hover:text-primary transition-colors font-body-md">SoundCloud</span>
                                 </div>
 
                                 <!-- View All Sites → -->
-                                <button onclick="switchView('supported-sites')" class="px-3.5 py-2 bg-primary/10 border border-primary/25 rounded-xl shadow-sm flex items-center gap-1.5 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 hover:bg-primary/20 transition-all duration-200 cursor-pointer">
+                                <button title="Browse all 1,000+ supported video & audio sites" onclick="switchView('supported-sites')" class="px-3.5 py-2 bg-primary/10 border border-primary/25 rounded-xl shadow-sm flex items-center gap-1.5 hover:-translate-y-[3px] hover:shadow-md hover:border-primary/50 hover:bg-primary/20 transition-all duration-200 cursor-pointer">
                                     <span class="text-xs font-bold text-primary font-body-md">View All Sites &rarr;</span>
                                 </button>
                             </div>
