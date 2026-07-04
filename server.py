@@ -14,6 +14,86 @@ from flask import Flask, request, jsonify, send_from_directory
 app = Flask(__name__, static_folder=".")
 ssl._create_default_https_context = ssl._create_unverified_context
 
+# --- Platform helpers ---
+def normalize_url(url):
+    """Normalize/fix URLs for known platforms before passing to yt-dlp."""
+    import re
+    # Reddit: convert post URLs to ensure they work
+    if 'reddit.com' in url:
+        # Remove query params that break extraction
+        url = url.split('?')[0].rstrip('/')
+        # Ensure it ends with the post path (no trailing slash issues)
+        if '/comments/' in url and not url.endswith('/'):
+            url = url + '/'
+    # Twitter/X: normalize x.com → twitter.com (yt-dlp handles both but twitter.com is more reliable)
+    url = re.sub(r'https?://x\.com/', 'https://twitter.com/', url)
+    # TikTok: remove tracking params
+    if 'tiktok.com' in url:
+        url = url.split('?')[0]
+    # Pinterest: ensure it's a pin URL
+    if 'pinterest.com' in url and '/pin/' not in url:
+        pass  # leave as-is
+    return url
+
+def get_platform_headers(url):
+    """Return platform-specific HTTP headers."""
+    base = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    }
+    if 'tiktok.com' in url:
+        base.update({
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+            "Referer": "https://www.tiktok.com/",
+        })
+    elif 'twitter.com' in url or 'x.com' in url:
+        base.update({
+            "Referer": "https://twitter.com/",
+        })
+    elif 'instagram.com' in url:
+        base.update({
+            "Referer": "https://www.instagram.com/",
+        })
+    elif 'reddit.com' in url or 'v.redd.it' in url:
+        base.update({
+            "Referer": "https://www.reddit.com/",
+        })
+    elif 'hotstar.com' in url:
+        base["Referer"] = "https://www.hotstar.com/"
+    elif 'facebook.com' in url:
+        base.update({
+            "Referer": "https://www.facebook.com/",
+        })
+    return base
+
+def get_extractor_args(url):
+    """Return platform-specific extractor args."""
+    if 'youtube.com' in url or 'youtu.be' in url:
+        if 'list=' in url or 'playlist' in url:
+            return {}  # no extractor args for playlists
+        return {"youtube": {"player_client": ["android_vr", "android", "web"]}}
+    return {}
+
+NEEDS_COOKIES = ['instagram.com', 'facebook.com', 'tiktok.com', 'twitter.com', 'x.com', 'reddit.com']
+
+def try_with_cookie_fallback(ydl_opts_base, action_fn, url):
+    """Try action_fn with ydl_opts, then retry with browser cookies if it fails on auth-required sites."""
+    try:
+        return action_fn(ydl_opts_base)
+    except Exception as initial_error:
+        needs_auth = any(p in url for p in NEEDS_COOKIES)
+        no_cookies = not ydl_opts_base.get('cookiefile') and not ydl_opts_base.get('cookiesfrombrowser')
+        if needs_auth and no_cookies:
+            for browser in ["chrome", "safari", "firefox", "chromium", "edge"]:
+                try:
+                    opts = dict(ydl_opts_base)
+                    opts["cookiesfrombrowser"] = (browser,)
+                    return action_fn(opts)
+                except Exception:
+                    continue
+        raise initial_error
+
 # State Management
 active_downloads = {}
 HISTORY_FILE = os.path.join(os.path.dirname(__file__), "history.json")
@@ -120,26 +200,22 @@ def analyze():
         
     temp_cookie_file = None
     try:
-        headers = {
-            "User-Agent": user_agent or "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept-Language": "en-US,en;q=0.9"
-        }
-        if "hotstar.com" in url:
-            headers["Referer"] = "https://www.hotstar.com/"
+        url = normalize_url(url)
+        headers = get_platform_headers(url)
+        if user_agent:
+            headers["User-Agent"] = user_agent
 
         ydl_opts = {
             "extract_flat": "in_playlist",
             "noplaylist": False,
             "cacert": certifi.where(),
             "geo_bypass": True,
+            "geo_bypass_country": "US",
             "http_headers": headers,
         }
-        if "playlist" not in url:
-            ydl_opts["extractor_args"] = {
-                "youtube": {
-                    "player_client": ["android_vr"]
-                }
-            }
+        ext_args = get_extractor_args(url)
+        if ext_args:
+            ydl_opts["extractor_args"] = ext_args
         
         if cookies_text:
             import tempfile
@@ -151,30 +227,11 @@ def analyze():
         elif cookies_browser:
             ydl_opts["cookiesfrombrowser"] = (cookies_browser,)
 
-        info = None
-        try:
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=False)
-        except Exception as initial_error:
-            if not cookies_text and not cookies_browser and ("instagram.com" in url or "x.com" in url or "twitter.com" in url):
-                fallback_browsers = ["chrome", "safari", "firefox"]
-                success = False
-                last_err = initial_error
-                for browser in fallback_browsers:
-                    try:
-                        ydl_opts_copy = ydl_opts.copy()
-                        ydl_opts_copy["cookiesfrombrowser"] = (browser,)
-                        with yt_dlp.YoutubeDL(ydl_opts_copy) as ydl:
-                            info = ydl.extract_info(url, download=False)
-                        success = True
-                        break
-                    except Exception as e:
-                        last_err = e
-                        continue
-                if not success:
-                    raise initial_error
-            else:
-                raise initial_error
+        def do_analyze(opts):
+            with yt_dlp.YoutubeDL(opts) as ydl:
+                return ydl.extract_info(url, download=False)
+
+        info = try_with_cookie_fallback(ydl_opts, do_analyze, url)
             
         if "entries" in info:
             entries = []
@@ -279,12 +336,10 @@ def bg_download(download_id, url, quality, filename, save_dir, audio_format, aud
                     "status": "Downloading"
                 })
 
-        headers = {
-            "User-Agent": user_agent or "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept-Language": "en-US,en;q=0.9"
-        }
-        if "hotstar.com" in url:
-            headers["Referer"] = "https://www.hotstar.com/"
+        url = normalize_url(url)
+        headers = get_platform_headers(url)
+        if user_agent:
+            headers["User-Agent"] = user_agent
 
         ydl_opts = {
             "format": format_code,
@@ -307,14 +362,13 @@ def bg_download(download_id, url, quality, filename, save_dir, audio_format, aud
             "cacert": certifi.where(),
             "ffmpeg_location": get_ffmpeg_path(),
             "geo_bypass": True,
+            "geo_bypass_country": "US",
             "http_headers": headers,
             "concurrent_fragment_downloads": 8,
-            "extractor_args": {
-                "youtube": {
-                    "player_client": ["android_vr"]
-                }
-            }
         }
+        ext_args = get_extractor_args(url)
+        if ext_args:
+            ydl_opts["extractor_args"] = ext_args
         if user_agent:
             ydl_opts["user_agent"] = user_agent
         if ratelimit:
@@ -330,29 +384,11 @@ def bg_download(download_id, url, quality, filename, save_dir, audio_format, aud
         elif cookies_browser:
             ydl_opts["cookiesfrombrowser"] = (cookies_browser,)
 
-        try:
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        def do_download(opts):
+            with yt_dlp.YoutubeDL(opts) as ydl:
                 ydl.download([url])
-        except Exception as initial_error:
-            if not cookies_text and not cookies_browser and ("instagram.com" in url or "x.com" in url or "twitter.com" in url):
-                fallback_browsers = ["chrome", "safari", "firefox"]
-                success = False
-                last_err = initial_error
-                for browser in fallback_browsers:
-                    try:
-                        ydl_opts_copy = ydl_opts.copy()
-                        ydl_opts_copy["cookiesfrombrowser"] = (browser,)
-                        with yt_dlp.YoutubeDL(ydl_opts_copy) as ydl:
-                            ydl.download([url])
-                        success = True
-                        break
-                    except Exception as e:
-                        last_err = e
-                        continue
-                if not success:
-                    raise initial_error
-            else:
-                raise initial_error
+
+        try_with_cookie_fallback(ydl_opts, do_download, url)
 
         if active_downloads.get(download_id, {}).get("cancelled"):
             active_downloads[download_id]["status"] = "Cancelled"
