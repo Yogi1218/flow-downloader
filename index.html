@@ -473,7 +473,7 @@
                 </div>
 
                 <!-- Analysis State: Loading View -->
-                <div id="home-loading-view" class="hidden glass-panel p-12 rounded-[32px] flex flex-col items-center justify-center space-y-6">
+                <div id="home-loading-view" class="hidden glass-panel p-8 md:p-12 rounded-[32px] flex flex-col items-center justify-center space-y-6">
                     <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
                     <div class="text-center">
                         <h4 class="font-headline-sm text-on-surface">Extracting Media Content</h4>
@@ -484,15 +484,15 @@
                 <!-- Analysis State: Video Analysis Card View -->
                 <div id="home-analysis-view" class="hidden space-y-6">
                     <!-- Heading -->
-                    <div class="flex items-center justify-between">
-                        <h4 class="font-headline-md text-on-surface">Media Analysis Complete</h4>
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <h4 class="font-headline-md text-on-surface text-base md:text-xl font-bold">Media Analysis Complete</h4>
                         <button onclick="backToHomeDefault()" class="flex items-center gap-2 text-primary font-bold text-sm hover:underline">
                             <span class="material-symbols-outlined text-sm">arrow_back</span> Back to search
                         </button>
                     </div>
 
                     <!-- Details Card -->
-                    <div class="glass-panel p-8 rounded-[32px] flex flex-col md:flex-row gap-8 relative overflow-hidden">
+                    <div class="glass-panel p-4 md:p-8 rounded-[32px] flex flex-col md:flex-row gap-5 md:gap-8 relative overflow-hidden">
                         <div class="absolute -top-24 -right-24 w-64 h-64 bg-primary/15 blur-[80px] rounded-full pointer-events-none"></div>
                         
                         <!-- Left: Thumbnail -->
@@ -648,14 +648,14 @@
 
             <!-- PAGE: DOWNLOADS / ACTIVE QUEUE -->
             <div id="page-downloads" class="page-view hidden space-y-lg">
-                <div class="flex items-end justify-between">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
                     <div>
-                        <h2 class="font-display-lg text-display-lg tracking-tight text-on-surface">Download Queue</h2>
-                        <p id="activeDownloadsSummary" class="text-on-surface-variant mt-2 font-body-md">No jobs actively downloading</p>
+                        <h2 class="text-2xl md:text-4xl font-extrabold tracking-tight text-on-surface">Download Queue</h2>
+                        <p id="activeDownloadsSummary" class="text-on-surface-variant mt-1 text-sm md:text-base">No jobs actively downloading</p>
                     </div>
-                    <button onclick="cancelAllActiveDownloads()" class="flex items-center gap-2 px-6 py-3 glass-panel rounded-xl text-on-surface hover:bg-surface-variant/40 transition-all active:scale-[0.98]">
-                        <span class="material-symbols-outlined">pause_circle</span>
-                        <span class="font-headline-sm text-headline-sm">Cancel All Active</span>
+                    <button onclick="cancelAllActiveDownloads()" class="flex items-center gap-2 px-4 py-2.5 md:px-6 md:py-3 glass-panel rounded-xl text-on-surface hover:bg-surface-variant/40 transition-all active:scale-[0.98] text-sm">
+                        <span class="material-symbols-outlined text-[20px]">pause_circle</span>
+                        <span class="text-sm font-bold">Cancel All</span>
                     </button>
                 </div>
 
@@ -669,8 +669,8 @@
             <div id="page-history" class="page-view hidden space-y-lg">
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div>
-                        <h2 class="font-display-lg text-display-lg tracking-tight text-on-surface">Downloaded Library</h2>
-                        <p class="text-on-surface-variant mt-2 font-body-md">Your catalog of files processed successfully</p>
+                        <h2 class="text-2xl md:text-4xl font-extrabold tracking-tight text-on-surface">Downloaded Library</h2>
+                        <p class="text-on-surface-variant mt-1 text-sm md:text-base">Your catalog of files processed successfully</p>
                     </div>
                     
                     <!-- Search & filter controls -->
