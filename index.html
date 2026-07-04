@@ -223,6 +223,12 @@
             #mainContent {
                 padding-bottom: 80px;
             }
+            #toastContainer {
+                bottom: 80px !important;
+                right: 16px !important;
+                left: 16px !important;
+                top: auto !important;
+            }
         }
     </style>
 </head>
@@ -268,7 +274,7 @@
 
     <!-- Custom Folder Browse Modal -->
     <div id="folderBrowseModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-        <div class="glass-panel max-w-md w-full rounded-3xl border border-white/10 p-6 flex flex-col gap-4 max-h-[85vh] shadow-2xl">
+        <div class="glass-panel max-w-md w-full rounded-3xl border border-white/10 p-4 sm:p-6 flex flex-col gap-4 max-h-[85vh] shadow-2xl">
             <div class="flex items-center justify-between border-b border-white/5 pb-2">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">folder</span>
@@ -286,7 +292,7 @@
                 </button>
             </div>
 
-            <div class="flex-1 overflow-y-auto border border-white/5 bg-black/20 p-2 rounded-2xl min-h-[250px] max-h-[350px] flex flex-col gap-1 custom-scrollbar" id="folderBrowserList">
+            <div class="flex-1 overflow-y-auto border border-white/5 bg-black/20 p-2 rounded-2xl min-h-[150px] max-h-[350px] flex flex-col gap-1 custom-scrollbar" id="folderBrowserList">
             </div>
 
             <div class="flex gap-2 pt-2 border-t border-white/5">
