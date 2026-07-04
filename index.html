@@ -648,10 +648,10 @@
                         <div id="settings-view-styling" class="settings-panel hidden space-y-6">
                             <div>
                                 <h3 class="text-sm font-bold text-on-surface mb-2">Accent UI Highlights</h3>
-                                <p class="text-xs text-on-surface-variant mb-4">Customize the primary branding color across dashboard indicators.</p>
+                                <p class="text-xs text-on-surface-variant mb-4">Flow automatically optimizes accent highlights for Light & Dark modes.</p>
                                 <div class="flex items-center gap-3">
-                                    <button onclick="setAccentColor('#afc6ff')" class="w-8 h-8 rounded-full bg-[#afc6ff] border border-white/10 flex items-center justify-center text-[#002d6c] font-bold text-xs shadow-md">✓</button>
-                                    <span class="text-xs text-on-surface-variant font-medium">Flow Default Blue</span>
+                                    <div class="w-8 h-8 rounded-full bg-primary border border-white/10 flex items-center justify-center text-on-primary font-bold text-xs shadow-md">✓</div>
+                                    <span class="text-xs text-on-surface font-semibold">Automatic Adaptive Blue</span>
                                 </div>
                             </div>
                         </div>
@@ -860,12 +860,14 @@
                 if (toggleText) toggleText.innerText = "Light";
                 appState.isThemeDark = false;
                 localStorage.setItem('flow-theme', 'light');
+                setAccentColor('#0061a4');
             } else {
                 html.classList.add('dark');
                 themeIcon.innerText = "dark_mode";
                 if (toggleText) toggleText.innerText = "Dark";
                 appState.isThemeDark = true;
                 localStorage.setItem('flow-theme', 'dark');
+                setAccentColor('#afc6ff');
             }
             // Update canvas stroke colors
             appState.downloads.forEach(dl => {
@@ -1599,13 +1601,14 @@
             themeIcon.innerText = "light_mode";
             themeToggle.querySelector('span.text-\\[10px\\]').innerText = "Light";
             appState.isThemeDark = false;
+            setAccentColor('#0061a4');
         } else {
             document.documentElement.classList.add('dark');
             themeIcon.innerText = "dark_mode";
             themeToggle.querySelector('span.text-\\[10px\\]').innerText = "Dark";
             appState.isThemeDark = true;
+            setAccentColor('#afc6ff');
         }
-        setAccentColor(savedAccent);
         loadSettingsConfig();
 
         navigateTo('home');
