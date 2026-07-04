@@ -245,6 +245,15 @@ def download_file():
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
 
+@app.route("/api/default_save_dir", methods=["GET"])
+def default_save_dir():
+    try:
+        path = os.path.abspath(os.path.join(os.path.dirname(__file__), "downloads"))
+        os.makedirs(path, exist_ok=True)
+        return jsonify({ "path": path })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 500
+
 @app.route("/api/analyze", methods=["POST"])
 def analyze():
     data = request.json or {}
@@ -639,7 +648,14 @@ def download():
     thumbnail = data.get("thumbnail", "")
     audio_format = data.get("audio_format", "mp3")
     audio_bitrate = data.get("audio_bitrate", "192")
-    save_dir = data.get("save_dir") or os.path.expanduser("~/Downloads")
+    save_dir = data.get("save_dir")
+    if not save_dir:
+        home_downloads = os.path.expanduser("~/Downloads")
+        if os.path.isdir(home_downloads) and os.access(home_downloads, os.W_OK):
+            save_dir = home_downloads
+        else:
+            save_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "downloads"))
+            os.makedirs(save_dir, exist_ok=True)
     ratelimit = data.get("ratelimit")
     cookies_browser = data.get("cookies_browser", "")
     cookies_text = data.get("cookies_text", "")
@@ -676,7 +692,14 @@ def download_batch():
     data = request.json or {}
     items = data.get("items", [])
     quality = data.get("quality", "720p")
-    save_dir = data.get("save_dir") or os.path.expanduser("~/Downloads")
+    save_dir = data.get("save_dir")
+    if not save_dir:
+        home_downloads = os.path.expanduser("~/Downloads")
+        if os.path.isdir(home_downloads) and os.access(home_downloads, os.W_OK):
+            save_dir = home_downloads
+        else:
+            save_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "downloads"))
+            os.makedirs(save_dir, exist_ok=True)
     audio_format = data.get("audio_format", "mp3")
     audio_bitrate = data.get("audio_bitrate", "192")
     ratelimit = data.get("ratelimit")

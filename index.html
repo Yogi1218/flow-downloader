@@ -1878,9 +1878,26 @@
             document.getElementById('browserCookiesSelect').value = localStorage.getItem('flow-cookies-browser') || '';
             document.getElementById('manualCookiesTextarea').value = localStorage.getItem('flow-manual-cookies') || '';
             
-            const savedPath = localStorage.getItem('flow-save-dir') || '/Users/yogipatel/Downloads';
-            document.getElementById('settingsSaveDirInput').value = savedPath;
-            document.getElementById('saveDirInput').value = savedPath;
+            const savedPath = localStorage.getItem('flow-save-dir');
+            if (savedPath) {
+                document.getElementById('settingsSaveDirInput').value = savedPath;
+                document.getElementById('saveDirInput').value = savedPath;
+            } else {
+                fetch('/api/default_save_dir')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.path) {
+                        document.getElementById('settingsSaveDirInput').value = data.path;
+                        document.getElementById('saveDirInput').value = data.path;
+                        localStorage.setItem('flow-save-dir', data.path);
+                    }
+                })
+                .catch(() => {
+                    // Fallback to absolute default
+                    document.getElementById('settingsSaveDirInput').value = '/Users/yogipatel/Downloads';
+                    document.getElementById('saveDirInput').value = '/Users/yogipatel/Downloads';
+                });
+            }
         }
 
         // Bootup configs initialization
