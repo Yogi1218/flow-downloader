@@ -229,6 +229,22 @@ def open_path():
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
 
+@app.route("/api/download_file", methods=["GET"])
+def download_file():
+    try:
+        path = request.args.get("path", "").strip()
+        if not path:
+            return jsonify({ "error": "Path is required" }), 400
+        path = os.path.abspath(os.path.expanduser(path))
+        if not os.path.exists(path) or not os.path.isfile(path):
+            return jsonify({ "error": f"File does not exist: {path}" }), 404
+            
+        directory = os.path.dirname(path)
+        filename = os.path.basename(path)
+        return send_from_directory(directory, filename, as_attachment=True)
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 500
+
 @app.route("/api/analyze", methods=["POST"])
 def analyze():
     data = request.json or {}

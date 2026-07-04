@@ -1502,6 +1502,7 @@
                         footer.innerHTML = `
                             <div class="flex gap-2 pt-2 border-t border-white/5">
                                 <button onclick="revealSystemPath('${dl.file_path.replace(/\\/g, '\\\\')}')" class="flex-1 py-1.5 bg-white/5 hover:bg-white/10 text-[10px] font-bold rounded-lg border border-white/5 transition-all text-on-surface text-center">Reveal File</button>
+                                <a href="/api/download_file?path=${encodeURIComponent(dl.file_path)}" download class="flex-1 py-1.5 bg-primary text-on-primary-container hover:brightness-110 text-[10px] font-bold rounded-lg transition-all text-center flex items-center justify-center">Download File</a>
                             </div>
                         `;
                     }
@@ -1622,15 +1623,24 @@
 
             filtered.forEach(item => {
                 const card = document.createElement('div');
-                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group cursor-pointer";
-                card.onclick = () => {
-                    if (item.file_path) revealSystemPath(item.file_path);
+                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group cursor-pointer relative";
+                card.onclick = (e) => {
+                    if (e.target.closest('.action-btn')) return;
+                    if (item.file_path) {
+                        window.location.href = `/api/download_file?path=${encodeURIComponent(item.file_path)}`;
+                    }
                 };
                 card.innerHTML = `
                     <div class="relative h-40 overflow-hidden bg-black/20">
                         <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${item.thumbnail || 'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?auto=format&fit=crop&q=80&w=360&h=202'}" alt="Thumbnail"/>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         <div class="absolute bottom-3 right-3 bg-black/80 px-2 py-1 rounded text-[9px] font-bold text-white backdrop-blur-sm border border-white/10 uppercase tracking-wider">${item.quality || 'HD'}</div>
+                        
+                        <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                            <button onclick="event.stopPropagation(); revealSystemPath('${item.file_path.replace(/\\/g, '\\\\')}')" class="action-btn p-1.5 bg-black/80 hover:bg-white/10 rounded-lg text-on-surface border border-white/10" title="Reveal in Finder/Explorer">
+                                <span class="material-symbols-outlined text-[16px] block">folder_open</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
                         <h4 class="font-headline-sm text-xs font-semibold text-on-surface line-clamp-2 leading-snug group-hover:text-primary transition-colors">${item.title}</h4>
@@ -1662,15 +1672,24 @@
 
             recent.forEach(item => {
                 const card = document.createElement('div');
-                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group cursor-pointer";
-                card.onclick = () => {
-                    if (item.file_path) revealSystemPath(item.file_path);
+                card.className = "glass-card rounded-2xl overflow-hidden flex flex-col group cursor-pointer relative";
+                card.onclick = (e) => {
+                    if (e.target.closest('.action-btn')) return;
+                    if (item.file_path) {
+                        window.location.href = `/api/download_file?path=${encodeURIComponent(item.file_path)}`;
+                    }
                 };
                 card.innerHTML = `
                     <div class="relative h-40 overflow-hidden bg-black/20">
                         <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${item.thumbnail || 'https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?auto=format&fit=crop&q=80&w=360&h=202'}" alt="Thumbnail"/>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         <div class="absolute bottom-3 right-3 bg-black/80 px-2 py-1 rounded text-[9px] font-bold text-white backdrop-blur-sm border border-white/10 uppercase tracking-wider">${item.quality || 'HD'}</div>
+                        
+                        <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                            <button onclick="event.stopPropagation(); revealSystemPath('${item.file_path.replace(/\\/g, '\\\\')}')" class="action-btn p-1.5 bg-black/80 hover:bg-white/10 rounded-lg text-on-surface border border-white/10" title="Reveal in Finder/Explorer">
+                                <span class="material-symbols-outlined text-[16px] block">folder_open</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
                         <h4 class="font-headline-sm text-xs font-semibold text-on-surface line-clamp-2 leading-snug group-hover:text-primary transition-colors">${item.title}</h4>
