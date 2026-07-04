@@ -72,7 +72,7 @@ def get_extractor_args(url):
     if 'youtube.com' in url or 'youtu.be' in url:
         if 'list=' in url or 'playlist' in url:
             return {}  # no extractor args for playlists
-        return {"youtube": {"player_client": ["android_vr", "android", "web"]}}
+        return {"youtube": {"player_client": ["ios", "android"]}}
     return {}
 
 NEEDS_COOKIES = ['instagram.com', 'facebook.com', 'tiktok.com', 'twitter.com', 'x.com', 'reddit.com']
