@@ -1172,9 +1172,15 @@
             .catch(err => {
                 document.getElementById('home-loading-view').classList.add('hidden');
                 
-                let userFriendlyMsg = err.message;
-                if (err.message.includes("empty media response") || err.message.includes("cookies") || err.message.includes("logged-in")) {
-                    userFriendlyMsg = "Instagram blocked the request. Please go to Settings > Cookies, select your web browser (Chrome/Safari) to share authentication session, click Save, and retry.";
+                const msg = err.message || "";
+                let userFriendlyMsg = msg;
+                
+                if (msg.includes("instagram.com") || msg.includes("Instagram")) {
+                    userFriendlyMsg = "Instagram blocked the request. Please go to Settings > Cookies, select your web browser to share auth, or paste cookies, and retry.";
+                } else if (msg.includes("youtube") || msg.includes("YouTube") || msg.includes("confirm you’re not a bot") || msg.includes("bot")) {
+                    userFriendlyMsg = "YouTube blocked this cloud server IP. Please go to Settings > Cookies, paste your exported YouTube cookies into the manual box, and try again.";
+                } else if (msg.includes("empty media response") || msg.includes("cookies") || msg.includes("logged-in")) {
+                    userFriendlyMsg = "Authentication required. Please configure cookies in the settings tab and retry.";
                 }
                 
                 showToast("Analysis Failed", userFriendlyMsg, "error");
