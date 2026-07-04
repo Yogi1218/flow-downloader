@@ -154,19 +154,60 @@ def index():
 @app.route("/api/browse_directory", methods=["GET"])
 def browse_directory():
     try:
-        import tkinter as tk
-        from tkinter import filedialog
+        req_path = request.args.get("path", "").strip()
+        if not req_path:
+            req_path = os.path.expanduser("~")
+        else:
+            req_path = os.path.abspath(os.path.expanduser(req_path))
+
+        if not os.path.exists(req_path) or not os.path.isdir(req_path):
+            req_path = os.path.expanduser("~")
+
+        subdirs = []
+        try:
+            for item in sorted(os.listdir(req_path)):
+                if item.startswith('.'):
+                    continue
+                full_path = os.path.join(req_path, item)
+                if os.path.isdir(full_path):
+                    try:
+                        os.access(full_path, os.R_OK)
+                        subdirs.append(item)
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+
+        parent_path = os.path.dirname(req_path)
+        if parent_path == req_path:
+            parent_path = ""
+
+        return jsonify({
+            "current_path": req_path,
+            "parent_path": parent_path,
+            "subdirs": subdirs
+        })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 500
+
+@app.route("/api/create_directory", methods=["POST"])
+def create_directory():
+    try:
+        data = request.json or {}
+        parent = data.get("parent", "").strip()
+        name = data.get("name", "").strip()
+        if not parent or not name:
+            return jsonify({ "error": "Parent path and directory name are required" }), 400
         
-        root = tk.Tk()
-        root.withdraw()
-        root.attributes("-topmost", True)
-        
-        path = filedialog.askdirectory(title="Choose Saving Directory")
-        root.destroy()
-        
-        if path:
-            return jsonify({ "path": path })
-        return jsonify({ "path": "" })
+        if "/" in name or "\\" in name or name.startswith("."):
+            return jsonify({ "error": "Invalid folder name" }), 400
+
+        target_path = os.path.join(parent, name)
+        if os.path.exists(target_path):
+            return jsonify({ "error": "Folder already exists" }), 400
+
+        os.makedirs(target_path, exist_ok=True)
+        return jsonify({ "success": True, "path": target_path })
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
 

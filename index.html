@@ -266,6 +266,44 @@
         </div>
     </div>
 
+    <!-- Custom Folder Browse Modal -->
+    <div id="folderBrowseModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+        <div class="glass-panel max-w-md w-full rounded-3xl border border-white/10 p-6 flex flex-col gap-4 max-h-[85vh] shadow-2xl">
+            <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">folder</span>
+                    <span>Select Directory</span>
+                </h4>
+                <button class="text-on-surface-variant/40 hover:text-on-surface" onclick="closeFolderBrowser()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <div class="flex gap-2">
+                <input id="folderBrowserPathInput" type="text" class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-on-surface outline-none focus:ring-1 focus:ring-primary" placeholder="Folder path"/>
+                <button onclick="navigateFolderBrowser(document.getElementById('folderBrowserPathInput').value)" class="p-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-on-surface transition-all">
+                    <span class="material-symbols-outlined text-[16px] block">arrow_forward</span>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto border border-white/5 bg-black/20 p-2 rounded-2xl min-h-[250px] max-h-[350px] flex flex-col gap-1 custom-scrollbar" id="folderBrowserList">
+            </div>
+
+            <div class="flex gap-2 pt-2 border-t border-white/5">
+                <input id="newFolderNameInput" type="text" class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-on-surface outline-none focus:ring-1 focus:ring-primary" placeholder="New folder name..."/>
+                <button onclick="createNewFolder()" class="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs text-on-surface flex items-center gap-1 transition-all">
+                    <span class="material-symbols-outlined text-[14px]">create_new_folder</span>
+                    <span>Create</span>
+                </button>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-2">
+                <button class="px-4 py-2 border border-white/10 hover:bg-white/5 text-on-surface-variant hover:text-on-surface rounded-xl text-xs font-bold transition-all" onclick="closeFolderBrowser()">Cancel</button>
+                <button class="bg-primary text-on-primary-container px-5 py-2 rounded-xl text-xs font-bold hover:brightness-110 transition-all" onclick="confirmFolderBrowserSelection()">Select Folder</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Sidebar Navigation -->
     <!-- Bottom Navigation Bar (Mobile Only) -->
     <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 glass-panel border-t border-white/10 h-16 items-center justify-around px-2">
@@ -1677,38 +1715,124 @@
             localStorage.setItem('flow-accent', color);
         }
 
-        // Browse native file browser inside general settings
-        function triggerBrowseDirectoryGeneral() {
-            fetch('/api/browse_directory')
+        // --- CUSTOM WEB-BASED FOLDER BROWSER ---
+        let currentFolderBrowserPath = "";
+        let folderBrowserTargetInputId = "";
+
+        function openFolderBrowser(inputId) {
+            folderBrowserTargetInputId = inputId;
+            const inputVal = document.getElementById(inputId).value.trim();
+            document.getElementById('newFolderNameInput').value = "";
+            document.getElementById('folderBrowseModal').classList.remove('hidden');
+            navigateFolderBrowser(inputVal);
+        }
+
+        function closeFolderBrowser() {
+            document.getElementById('folderBrowseModal').classList.add('hidden');
+        }
+
+        function navigateFolderBrowser(path) {
+            const url = '/api/browse_directory?path=' + encodeURIComponent(path || '');
+            fetch(url)
             .then(res => res.json())
             .then(data => {
-                if (data.path) {
-                    document.getElementById('settingsSaveDirInput').value = data.path;
-                    document.getElementById('saveDirInput').value = data.path;
-                    localStorage.setItem('flow-save-dir', data.path);
-                    showToast("Path Updated", "Target folder set: " + data.path.substring(0, 30) + "...", "success");
+                if (data.error) {
+                    showToast("Folder Error", data.error, "error");
+                    return;
                 }
+                currentFolderBrowserPath = data.current_path;
+                document.getElementById('folderBrowserPathInput').value = currentFolderBrowserPath;
+                renderFolderBrowserList(data);
             })
             .catch(err => {
-                showToast("Dialog Error", "Failed to open native folder choose dialog.", "error");
+                showToast("Connection Error", "Failed to contact folder browser API.", "error");
             });
         }
 
-        // Browse native file browser inside media analysis
-        function triggerBrowseDirectory() {
-            fetch('/api/browse_directory')
+        function renderFolderBrowserList(data) {
+            const listEl = document.getElementById('folderBrowserList');
+            listEl.innerHTML = "";
+
+            // Parent dir entry if available
+            if (data.parent_path && data.parent_path !== data.current_path) {
+                const parentRow = document.createElement('button');
+                parentRow.className = "w-full text-left px-3 py-2 text-xs font-bold text-primary hover:bg-white/5 rounded-xl flex items-center gap-2 transition-all";
+                parentRow.onclick = () => navigateFolderBrowser(data.parent_path);
+                parentRow.innerHTML = `
+                    <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+                    <span>.. (Parent Directory)</span>
+                `;
+                listEl.appendChild(parentRow);
+            }
+
+            if (data.subdirs.length === 0) {
+                const emptyRow = document.createElement('div');
+                emptyRow.className = "px-3 py-4 text-xs text-on-surface-variant/40 text-center";
+                emptyRow.innerText = "No subdirectories found here.";
+                listEl.appendChild(emptyRow);
+            } else {
+                data.subdirs.forEach(dir => {
+                    const fullPath = currentFolderBrowserPath.endsWith('/') || currentFolderBrowserPath.endsWith('\\') 
+                        ? currentFolderBrowserPath + dir 
+                        : currentFolderBrowserPath + '/' + dir;
+
+                    const row = document.createElement('button');
+                    row.className = "w-full text-left px-3 py-2 text-xs text-on-surface hover:bg-white/5 rounded-xl flex items-center gap-2 transition-all group";
+                    row.onclick = () => navigateFolderBrowser(fullPath);
+                    row.innerHTML = `
+                        <span class="material-symbols-outlined text-[16px] text-primary/80 group-hover:text-primary">folder</span>
+                        <span class="truncate">${dir}</span>
+                    `;
+                    listEl.appendChild(row);
+                });
+            }
+        }
+
+        function createNewFolder() {
+            const nameInput = document.getElementById('newFolderNameInput');
+            const name = nameInput.value.trim();
+            if (!name) {
+                showToast("Folder Name Required", "Please type a name for the new folder.", "error");
+                return;
+            }
+
+            fetch('/api/create_directory', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ parent: currentFolderBrowserPath, name: name })
+            })
             .then(res => res.json())
             .then(data => {
-                if (data.path) {
-                    document.getElementById('saveDirInput').value = data.path;
-                    document.getElementById('settingsSaveDirInput').value = data.path;
-                    localStorage.setItem('flow-save-dir', data.path);
-                    showToast("Path Updated", "Target folder set: " + data.path.substring(0, 30) + "...", "success");
+                if (data.error) {
+                    showToast("Create Folder Error", data.error, "error");
+                } else {
+                    showToast("Folder Created", `Successfully created "${name}"`, "success");
+                    nameInput.value = "";
+                    navigateFolderBrowser(currentFolderBrowserPath);
                 }
             })
             .catch(err => {
-                showToast("Dialog Error", "Failed to open native folder choose dialog.", "error");
+                showToast("Connection Error", "Failed to create folder on server.", "error");
             });
+        }
+
+        function confirmFolderBrowserSelection() {
+            const chosenPath = currentFolderBrowserPath;
+            if (chosenPath) {
+                document.getElementById('saveDirInput').value = chosenPath;
+                document.getElementById('settingsSaveDirInput').value = chosenPath;
+                localStorage.setItem('flow-save-dir', chosenPath);
+                showToast("Path Updated", "Target folder set: " + chosenPath.substring(0, 30) + "...", "success");
+                closeFolderBrowser();
+            }
+        }
+
+        function triggerBrowseDirectoryGeneral() {
+            openFolderBrowser('settingsSaveDirInput');
+        }
+
+        function triggerBrowseDirectory() {
+            openFolderBrowser('saveDirInput');
         }
 
         function saveGeneralConfig() {
