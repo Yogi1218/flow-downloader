@@ -151,6 +151,10 @@ def cleanup_temp_files(save_dir, filename):
 def index():
     return send_from_directory(".", "index.html")
 
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory(".", "favicon.png", mimetype="image/png")
+
 @app.route("/api/browse_directory", methods=["GET"])
 def browse_directory():
     try:
