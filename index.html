@@ -954,8 +954,6 @@
             }
         }
 
-        }
-
         // Mobile Sidebar Open/Close
         function openSidebar() {
             document.getElementById('sidebar').classList.add('mobile-open');
@@ -972,7 +970,6 @@
         document.getElementById('sidebarCloseToggle').addEventListener('click', closeSidebar);
 
         // Sync bottom nav active state
-        const _origNavigateTo = navigateTo;
         function updateBottomNav(pageId) {
             ['home','downloads','history','settings'].forEach(id => {
                 const btn = document.getElementById(`bnav-${id}`);
