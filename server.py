@@ -153,7 +153,7 @@ def index():
 
 @app.route("/favicon.ico")
 def favicon():
-    return send_from_directory(".", "favicon.png", mimetype="image/png")
+    return send_from_directory(".", "favicon.jpg", mimetype="image/jpeg")
 
 @app.route("/api/browse_directory", methods=["GET"])
 def browse_directory():
