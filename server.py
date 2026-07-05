@@ -75,6 +75,20 @@ def get_extractor_args(url):
         return {"youtube": {"player_client": ["ios", "android"]}}
     return {}
 
+def get_effective_cookies(client_cookies_text):
+    """Return the client cookies or fallback to server_cookies.txt if empty."""
+    if client_cookies_text and client_cookies_text.strip():
+        return client_cookies_text
+    
+    server_cookies_path = os.path.join(os.path.dirname(__file__), "server_cookies.txt")
+    if os.path.exists(server_cookies_path):
+        try:
+            with open(server_cookies_path, "r") as f:
+                return f.read()
+        except Exception:
+            pass
+    return ""
+
 NEEDS_COOKIES = ['instagram.com', 'facebook.com', 'tiktok.com', 'twitter.com', 'x.com', 'reddit.com']
 
 def try_with_cookie_fallback(ydl_opts_base, action_fn, url):
@@ -258,6 +272,35 @@ def default_save_dir():
     except Exception as e:
         return jsonify({ "error": str(e) }), 500
 
+@app.route("/api/save_global_cookies", methods=["POST"])
+def save_global_cookies():
+    try:
+        data = request.json or {}
+        cookies_text = data.get("cookies_text", "").strip()
+        
+        cookie_file_path = os.path.join(os.path.dirname(__file__), "server_cookies.txt")
+        if cookies_text:
+            with open(cookie_file_path, "w") as f:
+                f.write(cookies_text)
+            return jsonify({ "success": True, "message": "Cookies saved globally on server" })
+        else:
+            if os.path.exists(cookie_file_path):
+                os.remove(cookie_file_path)
+            return jsonify({ "success": True, "message": "Global cookies cleared" })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 500
+
+@app.route("/api/get_global_cookies", methods=["GET"])
+def get_global_cookies():
+    try:
+        cookie_file_path = os.path.join(os.path.dirname(__file__), "server_cookies.txt")
+        if os.path.exists(cookie_file_path):
+            with open(cookie_file_path, "r") as f:
+                return jsonify({ "cookies_text": f.read() })
+        return jsonify({ "cookies_text": "" })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 500
+
 @app.route("/api/analyze", methods=["POST"])
 def analyze():
     data = request.json or {}
@@ -287,10 +330,11 @@ def analyze():
         if ext_args:
             ydl_opts["extractor_args"] = ext_args
         
-        if cookies_text:
+        effective_cookies_text = get_effective_cookies(cookies_text)
+        if effective_cookies_text:
             import tempfile
             tf = tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False)
-            tf.write(cookies_text)
+            tf.write(effective_cookies_text)
             tf.close()
             temp_cookie_file = tf.name
             ydl_opts["cookiefile"] = temp_cookie_file
@@ -444,10 +488,11 @@ def bg_download(download_id, url, quality, filename, save_dir, audio_format, aud
         if ratelimit:
             ydl_opts["ratelimit"] = ratelimit
 
-        if cookies_text:
+        effective_cookies_text = get_effective_cookies(cookies_text)
+        if effective_cookies_text:
             import tempfile
             tf = tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False)
-            tf.write(cookies_text)
+            tf.write(effective_cookies_text)
             tf.close()
             temp_cookie_file = tf.name
             ydl_opts["cookiefile"] = temp_cookie_file
@@ -573,10 +618,11 @@ def bg_batch_download(batch_id, items, quality, save_dir, audio_format, audio_bi
 
         temp_cookie_file = None
         try:
-            if cookies_text:
+            effective_cookies_text = get_effective_cookies(cookies_text)
+            if effective_cookies_text:
                 import tempfile
                 tf = tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False)
-                tf.write(cookies_text)
+                tf.write(effective_cookies_text)
                 tf.close()
                 temp_cookie_file = tf.name
                 ydl_opts["cookiefile"] = temp_cookie_file

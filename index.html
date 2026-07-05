@@ -778,18 +778,18 @@
                         <div id="settings-view-cookies" class="settings-panel hidden space-y-6">
                             <div>
                                 <h3 class="text-sm font-bold text-on-surface mb-1">Cookies & Browser Authentication</h3>
-                                <p class="text-xs text-on-surface-variant mb-4">Select browser cookies or paste raw headers to bypass Instagram and X validation blocks.</p>
+                                <p class="text-xs text-on-surface-variant mb-4">Upload or paste Netscape format cookies to bypass YouTube, Instagram, and X validation blocks. When saved here, cookies are stored globally on the server so all visitors can download media cleanly.</p>
                                 
                                 <div class="bg-primary/5 rounded-xl border border-primary/10 p-3 mb-4 space-y-2 text-left">
                                     <div class="flex items-center gap-2 text-primary">
                                         <span class="material-symbols-outlined text-sm font-semibold" style="font-variation-settings: 'FILL' 1;">info</span>
-                                        <span class="text-xs font-bold">How to bypass Instagram / X blocks:</span>
+                                        <span class="text-xs font-bold">How to bypass YouTube / Instagram / X blocks:</span>
                                     </div>
                                     <ol class="text-[11px] text-on-surface-variant list-decimal list-inside space-y-1 pl-1">
                                         <li>Install a free extension like <strong>"Get cookies.txt LOCALLY"</strong> (Chrome/Edge/Brave) or <strong>"cookies.txt"</strong> (Firefox).</li>
-                                        <li>Open Instagram or X (Twitter) in your web browser and ensure you are logged in.</li>
+                                        <li>Open YouTube, Instagram, or X (Twitter) in your web browser and ensure you are logged in.</li>
                                         <li>Click the extension icon and select <strong>"Copy to Clipboard"</strong> (Netscape format).</li>
-                                        <li>Paste the copied text into the <strong>Manual cookies.txt content</strong> box below and click <strong>Save Authentication</strong>.</li>
+                                        <li>Paste the copied text into the <strong>Manual cookies.txt content</strong> box below and click <strong>Save Authentication</strong>. This saves it directly on the server to authenticate downloads for all website users.</li>
                                     </ol>
                                 </div>
                                 
@@ -1884,15 +1884,47 @@
         }
 
         function saveCookiesConfigDirect() {
-            localStorage.setItem('flow-cookies-browser', document.getElementById('browserCookiesSelect').value);
-            localStorage.setItem('flow-manual-cookies', document.getElementById('manualCookiesTextarea').value);
-            showToast("Auth Saved", "Browser cookies context saved successfully.", "success");
+            const browserSelect = document.getElementById('browserCookiesSelect').value;
+            const cookiesText = document.getElementById('manualCookiesTextarea').value;
+
+            localStorage.setItem('flow-cookies-browser', browserSelect);
+            localStorage.setItem('flow-manual-cookies', cookiesText);
+
+            fetch('/api/save_global_cookies', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cookies_text: cookiesText })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    showToast("Auth Sync Alert", "Saved locally but failed to save globally to server: " + data.error, "warning");
+                } else {
+                    showToast("Auth Saved", "Cookies saved locally and globally on server successfully.", "success");
+                }
+            })
+            .catch(() => {
+                showToast("Auth Saved", "Cookies saved locally (offline). Server sync failed.", "warning");
+            });
         }
 
         // Load cookies and settings config
         function loadSettingsConfig() {
             document.getElementById('browserCookiesSelect').value = localStorage.getItem('flow-cookies-browser') || '';
-            document.getElementById('manualCookiesTextarea').value = localStorage.getItem('flow-manual-cookies') || '';
+            
+            fetch('/api/get_global_cookies')
+            .then(res => res.json())
+            .then(data => {
+                if (data.cookies_text) {
+                    document.getElementById('manualCookiesTextarea').value = data.cookies_text;
+                    localStorage.setItem('flow-manual-cookies', data.cookies_text);
+                } else {
+                    document.getElementById('manualCookiesTextarea').value = localStorage.getItem('flow-manual-cookies') || '';
+                }
+            })
+            .catch(() => {
+                document.getElementById('manualCookiesTextarea').value = localStorage.getItem('flow-manual-cookies') || '';
+            });
             
             const savedPath = localStorage.getItem('flow-save-dir');
             if (savedPath) {
