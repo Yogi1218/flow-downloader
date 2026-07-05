@@ -418,7 +418,7 @@ def analyze():
                 pass
 
 # Background worker for a single download
-def bg_download(download_id, url, quality, filename, save_dir, audio_format, audio_bitrate, ratelimit, cookies_browser="", cookies_text="", user_agent=""):
+def bg_download(download_id, url, quality, filename, save_dir, audio_format, audio_bitrate, ratelimit, cookies_browser="", cookies_text="", user_agent="", client_id=""):
     temp_cookie_file = None
     try:
         os.makedirs(save_dir, exist_ok=True)
@@ -529,7 +529,8 @@ def bg_download(download_id, url, quality, filename, save_dir, audio_format, aud
                 "type": "audio" if quality == "Audio only" else "video",
                 "size": active_downloads[download_id].get("total", "N/A"),
                 "file_path": final_path,
-                "timestamp": int(uuid.uuid4().time / 10000000)
+                "timestamp": int(uuid.uuid4().time / 10000000),
+                "client_id": client_id
             })
 
     except Exception as e:
@@ -546,7 +547,7 @@ def bg_download(download_id, url, quality, filename, save_dir, audio_format, aud
                 pass
 
 # Background worker for batch downloads
-def bg_batch_download(batch_id, items, quality, save_dir, audio_format, audio_bitrate, ratelimit, cookies_browser="", cookies_text="", user_agent=""):
+def bg_batch_download(batch_id, items, quality, save_dir, audio_format, audio_bitrate, ratelimit, cookies_browser="", cookies_text="", user_agent="", client_id=""):
     os.makedirs(save_dir, exist_ok=True)
     total_items = len(items)
     active_downloads[batch_id]["status"] = "Processing Batch..."
@@ -669,7 +670,8 @@ def bg_batch_download(batch_id, items, quality, save_dir, audio_format, audio_bi
                 "type": "audio" if quality == "Audio only" else "video",
                 "size": "N/A",
                 "file_path": final_path,
-                "timestamp": int(uuid.uuid4().time / 10000000)
+                "timestamp": int(uuid.uuid4().time / 10000000),
+                "client_id": client_id
             })
             
         except Exception as e:
@@ -715,6 +717,7 @@ def download():
     cookies_browser = data.get("cookies_browser", "")
     cookies_text = data.get("cookies_text", "")
     user_agent = data.get("user_agent", "")
+    client_id = data.get("client_id", "")
 
     if not url:
         return jsonify({ "error": "URL is required" }), 400
@@ -731,11 +734,12 @@ def download():
         "downloaded": "0 MB",
         "total": "N/A",
         "cancelled": False,
-        "error_log": ""
+        "error_log": "",
+        "client_id": client_id
     }
 
     t = threading.Thread(target=bg_download, args=(
-        download_id, url, quality, filename, save_dir, audio_format, audio_bitrate, ratelimit, cookies_browser, cookies_text, user_agent
+        download_id, url, quality, filename, save_dir, audio_format, audio_bitrate, ratelimit, cookies_browser, cookies_text, user_agent, client_id
     ))
     t.daemon = True
     t.start()
@@ -761,6 +765,7 @@ def download_batch():
     cookies_browser = data.get("cookies_browser", "")
     cookies_text = data.get("cookies_text", "")
     user_agent = data.get("user_agent", "")
+    client_id = data.get("client_id", "")
 
     if not items:
         return jsonify({ "error": "No items to download" }), 400
@@ -777,11 +782,12 @@ def download_batch():
         "downloaded": f"0 of {len(items)} items",
         "total": f"{len(items)} items",
         "cancelled": False,
-        "error_log": ""
+        "error_log": "",
+        "client_id": client_id
     }
 
     t = threading.Thread(target=bg_batch_download, args=(
-        batch_id, items, quality, save_dir, audio_format, audio_bitrate, ratelimit, cookies_browser, cookies_text, user_agent
+        batch_id, items, quality, save_dir, audio_format, audio_bitrate, ratelimit, cookies_browser, cookies_text, user_agent, client_id
     ))
     t.daemon = True
     t.start()
@@ -812,11 +818,22 @@ def clear_download(download_id):
 
 @app.route("/api/downloads", methods=["GET"])
 def get_downloads():
-    return jsonify(list(active_downloads.values()))
+    client_id = request.args.get("client_id", "").strip()
+    results = [
+        val for val in active_downloads.values()
+        if not client_id or val.get("client_id") == client_id
+    ]
+    return jsonify(results)
 
 @app.route("/api/history", methods=["GET"])
 def get_history():
-    return jsonify(load_history())
+    client_id = request.args.get("client_id", "").strip()
+    history = load_history()
+    results = [
+        item for item in history
+        if not client_id or item.get("client_id") == client_id
+    ]
+    return jsonify(results)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)

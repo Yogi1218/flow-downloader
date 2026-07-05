@@ -1300,7 +1300,8 @@
                     ratelimit: speedLimit ? parseInt(speedLimit) : null,
                     cookies_browser: localStorage.getItem('flow-cookies-browser') || '',
                     cookies_text: localStorage.getItem('flow-manual-cookies') || '',
-                    user_agent: navigator.userAgent
+                    user_agent: navigator.userAgent,
+                    client_id: localStorage.getItem('flow-client-id') || ''
                 })
             })
             .then(res => res.json())
@@ -1340,7 +1341,8 @@
                     ratelimit: document.getElementById('downloadSpeedLimit').value ? parseInt(document.getElementById('downloadSpeedLimit').value) : null,
                     cookies_browser: localStorage.getItem('flow-cookies-browser') || '',
                     cookies_text: localStorage.getItem('flow-manual-cookies') || '',
-                    user_agent: navigator.userAgent
+                    user_agent: navigator.userAgent,
+                    client_id: localStorage.getItem('flow-client-id') || ''
                 })
             })
             .then(res => res.json())
@@ -1363,7 +1365,8 @@
         }
 
         function fetchActiveDownloads() {
-            fetch('/api/downloads')
+            const clientId = localStorage.getItem('flow-client-id') || '';
+            fetch(`/api/downloads?client_id=${clientId}`)
             .then(res => res.json())
             .then(data => {
                 // Update badge with active downloads count
@@ -1598,7 +1601,8 @@
         }
 
         function fetchHistory() {
-            fetch('/api/history')
+            const clientId = localStorage.getItem('flow-client-id') || '';
+            fetch(`/api/history?client_id=${clientId}`)
             .then(res => res.json())
             .then(data => {
                 appState.history = data;
@@ -1946,6 +1950,13 @@
                     document.getElementById('saveDirInput').value = '/Users/yogipatel/Downloads';
                 });
             }
+        }
+
+        // Generate or retrieve client-specific isolated ID
+        let clientId = localStorage.getItem('flow-client-id');
+        if (!clientId) {
+            clientId = 'client_' + Math.random().toString(36).substring(2, 15) + '_' + Date.now().toString(36);
+            localStorage.setItem('flow-client-id', clientId);
         }
 
         // Bootup configs initialization
