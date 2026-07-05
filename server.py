@@ -67,11 +67,14 @@ def get_platform_headers(url):
         })
     return base
 
-def get_extractor_args(url):
+def get_extractor_args(url, has_cookies=False):
     """Return platform-specific extractor args."""
     if 'youtube.com' in url or 'youtu.be' in url:
         if 'list=' in url or 'playlist' in url:
             return {}  # no extractor args for playlists
+        if has_cookies:
+            # If cookies are provided, let yt-dlp use default web client list so it can apply the web session cookies.
+            return {}
         return {"youtube": {"player_client": ["ios", "android"]}}
     return {}
 
@@ -326,11 +329,12 @@ def analyze():
             "geo_bypass_country": "US",
             "http_headers": headers,
         }
-        ext_args = get_extractor_args(url)
+        effective_cookies_text = get_effective_cookies(cookies_text)
+        has_cookies = bool(effective_cookies_text or cookies_browser)
+        ext_args = get_extractor_args(url, has_cookies=has_cookies)
         if ext_args:
             ydl_opts["extractor_args"] = ext_args
         
-        effective_cookies_text = get_effective_cookies(cookies_text)
         if effective_cookies_text:
             import tempfile
             tf = tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False)
@@ -480,7 +484,9 @@ def bg_download(download_id, url, quality, filename, save_dir, audio_format, aud
             "http_headers": headers,
             "concurrent_fragment_downloads": 8,
         }
-        ext_args = get_extractor_args(url)
+        effective_cookies_text = get_effective_cookies(cookies_text)
+        has_cookies = bool(effective_cookies_text or cookies_browser)
+        ext_args = get_extractor_args(url, has_cookies=has_cookies)
         if ext_args:
             ydl_opts["extractor_args"] = ext_args
         if user_agent:
@@ -488,7 +494,6 @@ def bg_download(download_id, url, quality, filename, save_dir, audio_format, aud
         if ratelimit:
             ydl_opts["ratelimit"] = ratelimit
 
-        effective_cookies_text = get_effective_cookies(cookies_text)
         if effective_cookies_text:
             import tempfile
             tf = tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False)
@@ -605,12 +610,12 @@ def bg_batch_download(batch_id, items, quality, save_dir, audio_format, audio_bi
             "geo_bypass": True,
             "http_headers": headers,
             "concurrent_fragment_downloads": 8,
-            "extractor_args": {
-                "youtube": {
-                    "player_client": ["android_vr"]
-                }
-            }
         }
+        effective_cookies_text = get_effective_cookies(cookies_text)
+        has_cookies = bool(effective_cookies_text or cookies_browser)
+        ext_args = get_extractor_args(url, has_cookies=has_cookies)
+        if ext_args:
+            ydl_opts["extractor_args"] = ext_args
         if user_agent:
             ydl_opts["user_agent"] = user_agent
         if ratelimit:
