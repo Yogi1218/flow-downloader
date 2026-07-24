@@ -434,8 +434,13 @@
                                 <span class="material-symbols-outlined text-on-surface-variant shrink-0 text-[20px]">link</span>
                                 <input id="ytUrlInput" class="w-full bg-transparent border-none text-on-surface focus:ring-0 placeholder:text-on-surface-variant/40 text-sm md:text-base outline-none border-0 min-w-0" placeholder="Paste or drop a media URL…" type="text"/>
                             </div>
-                            <div class="pr-1 md:pr-2 shrink-0">
-                                <button onclick="clearUrl()" class="p-2 md:px-4 md:py-2 hover:bg-surface-variant/40 rounded-xl text-on-surface-variant font-medium transition-colors text-sm flex items-center gap-1">
+                            <div class="pr-1 md:pr-2 shrink-0 flex items-center gap-1">
+                                <label title="Import URLs from .txt file" class="cursor-pointer p-2 md:px-3 md:py-2 hover:bg-surface-variant/40 rounded-xl text-primary font-medium transition-colors text-sm flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[18px]">upload_file</span>
+                                    <span class="hidden md:inline font-bold">Import Bulk TXT</span>
+                                    <input type="file" id="bulkImportInput" class="hidden" accept=".txt" onchange="handleBulkImport(event)">
+                                </label>
+                                <button onclick="clearUrl()" class="p-2 md:px-3 md:py-2 hover:bg-surface-variant/40 rounded-xl text-on-surface-variant font-medium transition-colors text-sm flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[18px]">close</span>
                                     <span class="hidden md:inline">Clear</span>
                                 </button>
@@ -2036,6 +2041,68 @@
                     analyzeUrl();
                 }, 50);
             });
+        }
+
+        // Bulk URL Import feature
+        function handleBulkImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const urls = text.split('\n').map(line => line.trim()).filter(line => line.startsWith('http://') || line.startsWith('https://'));
+
+                if (urls.length === 0) {
+                    showToast("Import Failed", "No valid URLs found in the text file.", "error");
+                    event.target.value = ''; // Reset input
+                    return;
+                }
+
+                showToast("Bulk Import Started", `Found ${urls.length} URLs. Queueing downloads...`, "info");
+
+                // Create dummy items payload expected by backend batch endpoint
+                const items = urls.map((url, i) => ({
+                    url: url,
+                    title: `Bulk Imported Video ${i + 1}`,
+                    thumbnail: ""
+                }));
+
+                const speedLimit = document.getElementById('downloadSpeedLimit')?.value;
+                const saveDir = document.getElementById('saveDirInput')?.value;
+
+                fetch('/api/download/batch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        items: items,
+                        quality: appState.downloadMode === 'audio' ? 'Audio only' : '720p',
+                        save_dir: saveDir,
+                        audio_format: document.getElementById('audioFormatSelect')?.value || 'mp3',
+                        audio_bitrate: document.getElementById('audioBitrateSelect')?.value || '192',
+                        ratelimit: speedLimit ? parseInt(speedLimit) : null,
+                        cookies_browser: localStorage.getItem('flow-cookies-browser') || '',
+                        cookies_text: localStorage.getItem('flow-manual-cookies') || '',
+                        user_agent: navigator.userAgent,
+                        client_id: localStorage.getItem('flow-client-id') || '',
+                        download_subtitles: localStorage.getItem('flow-dl-subtitles') === 'true',
+                        download_metadata: localStorage.getItem('flow-dl-metadata') === 'true'
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) throw new Error(data.error);
+                    showToast("Batch Queued", `Started batch download for ${items.length} items from file.`, "success");
+                    navigateTo('downloads');
+                    startDashboardPolling();
+                })
+                .catch(err => {
+                    showToast("Queue Error", "Failed to start bulk import batch: " + err.message, "error");
+                });
+
+                event.target.value = ''; // Reset input for future imports
+            };
+            reader.readAsText(file);
         }
     </script>
 </body>

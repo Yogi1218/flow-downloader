@@ -6,3 +6,5 @@ pycryptodomex
 websockets
 curl_cffi
 brotli
+gunicorn
+pytest
