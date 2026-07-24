@@ -1,8 +1,10 @@
 Flask>=2.0.0
-yt-dlp>=2026.06.09
+yt-dlp>=2024.03.10
 certifi
 mutagen
 pycryptodomex
 websockets
 curl_cffi
 brotli
+gunicorn
+pytest

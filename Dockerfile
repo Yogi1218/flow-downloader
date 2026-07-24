@@ -23,5 +23,5 @@ COPY . .
 # Expose port 8080 for Flask server
 EXPOSE 8080
 
-# Run Flask server
-CMD ["python", "server.py"]
+# Run gunicorn WSGI server
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "server:app"]
